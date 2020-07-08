@@ -1,0 +1,24 @@
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.deps.json
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.AssemblyInfoInputs.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.AssemblyInfo.cs
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.runtimeconfig.json
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.runtimeconfig.dev.json
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.csproj.CoreCompileInputs.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.genruntimeconfig.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.csprojAssemblyReference.cache
+F:\Projects\TOS\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.deps.json
+F:\Projects\TOS\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.runtimeconfig.json
+F:\Projects\TOS\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.runtimeconfig.dev.json
+F:\Projects\TOS\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.dll
+F:\Projects\TOS\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.pdb
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.csprojAssemblyReference.cache
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.AssemblyInfoInputs.cache
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.AssemblyInfo.cs
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.csproj.CoreCompileInputs.cache
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.dll
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.pdb
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.genruntimeconfig.cache

@@ -1,0 +1,52 @@
+
+import * as React from 'react';
+import { Checkbox, Space } from 'antd';
+import DataTable, { DataTableColumnProps, Filterer, ColumnType, Renderer } from 'pages/shared/DataTable';
+import { EditOutlined } from '@ant-design/icons';
+
+class DataTableUtil {
+    public static Columns = {
+        Active: (onChange: (record: any) => void) => {
+            // TODO: Filtering doesn't work for this one?
+            const baseProps = DataTable.StandardColumns.Boolean('Active', 'isActive', Filterer.BooleanRadio, Renderer.BooleanYesNo);       
+
+            if(!onChange) {
+                return baseProps;
+            }
+
+            return {
+                ...baseProps,
+                renderer: null,
+                filterType: Filterer.BooleanRadio,
+                columnType: ColumnType.Boolean,
+                columnProps: {
+                    ...baseProps.columnProps,
+                    width: '120px',
+                    render: (value: any, record: any) => {
+                        return (
+                            <Checkbox aria-label="Is Active" checked={record.isActive} onChange={() => onChange(record)} />
+                        );
+                    }
+                }
+            } as DataTableColumnProps<any>;
+        },
+        Actions: (idKey: string, onEditClick: (record: any) => void) => {
+            return {
+                columnProps: {
+                    title: 'Actions',
+                    key: 'actions',
+                    sorter: false,
+                    render: (value: any, record: any) => {
+                        return (
+                            <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                                <EditOutlined onClick={() => onEditClick(record[idKey])} />
+                            </Space>
+                        );
+                    }
+                }
+            } as DataTableColumnProps<any>;
+        }
+    }
+}
+
+export default DataTableUtil;

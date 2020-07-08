@@ -1,0 +1,28 @@
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Business.deps.json
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Business.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Business.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csprojAssemblyReference.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.AssemblyInfoInputs.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.AssemblyInfo.cs
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csproj.CoreCompileInputs.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Core.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Data.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Core.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Data.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csproj.CopyComplete
+F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Business.deps.json
+F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Business.dll
+F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Business.pdb
+F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Core.dll
+F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Data.dll
+F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Core.pdb
+F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Data.pdb
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csprojAssemblyReference.cache
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.AssemblyInfoInputs.cache
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.AssemblyInfo.cs
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csproj.CoreCompileInputs.cache
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csproj.CopyComplete
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.dll
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.pdb

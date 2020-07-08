@@ -1,0 +1,18 @@
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\bin\Debug\netcoreapp3.1\TaskList.Core.deps.json
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\bin\Debug\netcoreapp3.1\TaskList.Core.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\bin\Debug\netcoreapp3.1\TaskList.Core.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.AssemblyInfoInputs.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.AssemblyInfo.cs
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.dll
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.pdb
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.csprojAssemblyReference.cache
+C:\Projects\Iowa Treasurer\TaskList\Source\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.csproj.CoreCompileInputs.cache
+F:\Projects\TOS\TaskList\TaskList.Core\bin\Debug\netcoreapp3.1\TaskList.Core.deps.json
+F:\Projects\TOS\TaskList\TaskList.Core\bin\Debug\netcoreapp3.1\TaskList.Core.dll
+F:\Projects\TOS\TaskList\TaskList.Core\bin\Debug\netcoreapp3.1\TaskList.Core.pdb
+F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.csprojAssemblyReference.cache
+F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.AssemblyInfoInputs.cache
+F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.AssemblyInfo.cs
+F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.csproj.CoreCompileInputs.cache
+F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.dll
+F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.pdb
