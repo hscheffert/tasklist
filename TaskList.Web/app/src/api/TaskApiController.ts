@@ -10,6 +10,12 @@ class TaskApiControllerInternal {
         let url = this.RouteGetAll();
         return HttpApi.RestRequest<any, TaskDTO[]>(null, 'get', url, requestOptions);
     }
+    // get: api/tasks/getAllUserTasks/${encodeURIComponent(id)}
+    public RouteGetAllUserTasks = (id?: string) => `api/tasks/getAllUserTasks/${encodeURIComponent(id)}`;
+    public getAllUserTasks(id?: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<TaskDTO[]>> {
+        let url = this.RouteGetAllUserTasks(id);
+        return HttpApi.RestRequest<any, TaskDTO[]>(null, 'get', url, requestOptions);
+    }
     // get: api/tasks/${encodeURIComponent(id)}
     public RouteGet = (id: string) => `api/tasks/${encodeURIComponent(id)}`;
     public get(id: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<TaskDTO>> {

@@ -4,17 +4,22 @@ import FrequencyTable from './FrequencyTable';
 import FrequencyEdit from './FrequencyEdit';
 import Routes from 'config/ConfigureRoutes';
 import PageNotFound from 'pages/public/PageNotFound';
+import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
 
 class Frequency extends React.Component<{}> {
     render() {
         return (
-            <Switch>
-                <Route exact path={Routes.GET.FREQUENCY_BASE} component={FrequencyTable} />
-                <Route path={Routes.GET.FREQUENCY_EDIT} component={FrequencyEdit} />
+            <React.Fragment>
+                <BreadcrumbsItem name="frequencies" to={Routes.GET.FREQUENCY_BASE}>Frequencies</BreadcrumbsItem>
 
-                {/* This needs to be the last item */}
-                <Route component={PageNotFound} />
-            </Switch>
+                <Switch>
+                    <Route exact path={Routes.GET.FREQUENCY_BASE} component={FrequencyTable} />
+                    <Route path={Routes.GET.FREQUENCY_EDIT} component={FrequencyEdit} />
+
+                    {/* This needs to be the last item */}
+                    <Route component={PageNotFound} />
+                </Switch>
+            </React.Fragment>
         );
     }
 }

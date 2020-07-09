@@ -1,6 +1,5 @@
 import { Reducer } from 'redux';
 import { KnownActions } from './UserActions';
-import { Role } from 'constants/Roles';
 import { LoadingStatusType } from 'models/frontend/common/LoadingStatusType';
 
 export type UserState = {
@@ -9,7 +8,6 @@ export type UserState = {
     firstName: string;
     lastName: string;
     isAdmin: boolean;
-    // role: Role;
     /** Quick access to whether or not the user has logged in */
     isLoggedIn: boolean;
 
@@ -24,7 +22,6 @@ let DefaultUserState: UserState = {
     lastName: "",
     state: "none",
     isAdmin: false,
-    //role: null,
     isLoggedIn: false
 };
 
@@ -38,7 +35,6 @@ export const UserReducer: Reducer<UserState, KnownActions> = (state: UserState =
                 firstName: action.data.firstName,
                 lastName: action.data.lastName,
                 isAdmin: action.data.isSupervisor,
-                // role: action.data.role,
                 isLoggedIn: true
             };
         case "CLEAR_LOGIN_STATE":
@@ -54,7 +50,6 @@ export const UserReducer: Reducer<UserState, KnownActions> = (state: UserState =
                 firstName: action.data.firstName,
                 lastName: action.data.lastName,
                 isAdmin: action.data.isSupervisor,
-                // role: action.data.role,
                 isLoggedIn: true,
             };
         case "UPDATE_USER_STATE":

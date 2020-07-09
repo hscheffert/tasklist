@@ -6,11 +6,22 @@ import { EditOutlined } from '@ant-design/icons';
 
 class DataTableUtil {
     public static Columns = {
+        DisplayOrder: (isDefaultSort: boolean) => DataTable.StandardColumns.Number('Display Order', 'displayOrder', 0, {
+            columnProps: {
+                align: 'left',
+                width: '160px',
+                sorter: {
+                    compare: (a: any, b: any) => a.displayOrder - b.displayOrder,
+                    multiple: 1,
+                },
+                defaultSortOrder: isDefaultSort ? 'ascend' : undefined
+            }
+        }),
         Active: (onChange: (record: any) => void) => {
             // TODO: Filtering doesn't work for this one?
-            const baseProps = DataTable.StandardColumns.Boolean('Active', 'isActive', Filterer.BooleanRadio, Renderer.BooleanYesNo);       
+            const baseProps = DataTable.StandardColumns.Boolean('Active', 'isActive', Filterer.BooleanRadio, Renderer.BooleanYesNo);
 
-            if(!onChange) {
+            if (!onChange) {
                 return baseProps;
             }
 

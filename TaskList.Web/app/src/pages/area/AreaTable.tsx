@@ -3,7 +3,7 @@ import { Space, notification, } from 'antd';
 import HistoryUtil from '../../utils/HistoryUtil';
 import AreaDTO from 'models/generated/AreaDTO';
 import AreaApiController from 'api/AreaApiController';
-import DataTable, { DataTableColumnProps } from '../shared/DataTable';
+import DataTable, { DataTableColumnProps, Filterer } from '../shared/DataTable';
 import DataTableUtil from '../../utils/DataTableUtil';
 import Routes from 'config/ConfigureRoutes';
 
@@ -18,6 +18,7 @@ interface AreaTableState {
 class AreaTable extends React.Component<AreaTableProps, AreaTableState> {
   private dataTable: DataTable<AreaDTO>;
   private customTableColumns: DataTableColumnProps<any>[] = [
+    DataTableUtil.Columns.DisplayOrder(true),
     DataTable.StandardColumns.Text('Name', 'name'),
     DataTable.StandardColumns.Text('Sub Areas', 'subAreas', {
       renderDataTransform: (subareas: any, record: any) => {
@@ -36,7 +37,7 @@ class AreaTable extends React.Component<AreaTableProps, AreaTableState> {
 
   componentDidMount() {
     this.customTableColumns.push(DataTableUtil.Columns.Active(this.handleActiveToggle));
-    this.customTableColumns.push(DataTableUtil.Columns.Actions('areaId', this.editArea)); 
+    this.customTableColumns.push(DataTableUtil.Columns.Actions('areaId', this.editArea));
     this.fetchData();
   }
 

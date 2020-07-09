@@ -26,6 +26,7 @@ import UserDTO from 'models/generated/UserDTO';
 import StaffTypeDTO from 'models/generated/StaffTypeDTO';
 import Routes from 'config/ConfigureRoutes';
 import { UserState } from 'redux/UserReducer';
+import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
 
 interface RouteParams {
     id: string;
@@ -171,9 +172,11 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
     render() {
         return (
             <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
-                {/* <BreadcrumbsItem name="task_edit">
+                <BreadcrumbsItem name="home" to={Routes.GET.BASE_ROUTE}>Tasks</BreadcrumbsItem>
+                <BreadcrumbsItem name="task_edit">
                     {this.state.id !== '0' ? 'Edit Task' : 'New Task'}
-                </BreadcrumbsItem> */}
+                </BreadcrumbsItem>
+                
                 <Spin spinning={this.state.loading}>
                     {this.renderForm()}
                 </Spin>
@@ -202,7 +205,6 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
 
         try {
             const [taskResponse, areasResponse, frequenciesResponse, usersResponse, staffTypesResponse] = await Promise.all(promises);
-
 
             if (taskResponse) {
                 this.formRef?.setFieldsValue({
@@ -331,8 +333,8 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
                 label={staffType.name}
                 name={this.staffTypeFormNameMapper(staffType.name)}
                 rules={isRequired ? [FormHelper.FormConstants.FormRequiredRule] : []}>
-                <Select>
-                    {users.map(FormHelper.renderUserOption)}
+                <Select allowClear={true}>
+                    {users.map(FormHelper.renderUserSelectOption)}
                 </Select>
             </Form.Item>
         );
@@ -362,15 +364,16 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
     }
 
     private createTaskStaffArray = () => {
-        const emptyTaskStaff = this.state.staffTypes.map(staffType => ({
-            staffId: this.state.task.taskStaff.find((x: any) => x.staffTypeId == staffType.staffTypeId)?.staffId,
+        const taskStaff = this.state.staffTypes.map(staffType => ({
+            staffId: this.state.task.taskStaff.find((x: any) => x.staffTypeId == staffType.staffTypeId)?.staffId || null,
             staffTypeId: staffType.staffTypeId,
             staffTypeName: staffType.name,
             userId: this.formRef?.getFieldValue(this.staffTypeFormNameMapper(staffType.name)),
-            taskId: this.state.id
+            taskId: this.state.id !== '0' ? this.state.id : null,
         }));
 
-        return emptyTaskStaff;
+        console.log('taskStaff for task:', taskStaff);
+        return taskStaff;
     }
 
     private findDuplicates = (arr: string[]) => {

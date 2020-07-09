@@ -582,23 +582,15 @@ class DataTable<T> extends React.Component<DataTableProps<T>, DataTableState<T>>
             res.columnProps = res.columnProps || {};
             res.columnProps.title = title;
             res.columnProps.dataIndex = dataIndex;
-            res.columnProps.sorter = res.columnProps.sorter === undefined ? true : res.columnProps.sorter;
-            //res.columnProps.render =
-            //    (value: number, record: T) =>
-            //        value || value === 0 ?
-            //            precision === 0 ? FORMAT.quantity0(value) :
-            //                precision === 2 ? FORMAT.quantity2(value) :
-            //                    precision === 5 ? FORMAT.quantity5(value) :
-            //                        value :
-            //            '';
+            res.columnProps.sorter = res.columnProps.sorter === undefined ? true : res.columnProps.sorter;            
              res.columnProps.render =
                  (value: number, record: T) =>
                      value || value === 0 ?
                          precision === 0 ? Math.round(value) :
-                             precision === 2 ? value.toFixed(2) :
-                                 precision === 5 ? value.toFixed(5) :
+                             precision === 2 ? parseFloat(value.toFixed(2)) :
+                                 precision === 5 ? parseFloat(value.toFixed(5)) :
                                      value : '';
-            res.columnProps.align = 'right';
+            res.columnProps.align = res.columnProps.align || 'right';
             return res;
         },
         Boolean<T>(

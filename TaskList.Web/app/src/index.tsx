@@ -7,6 +7,8 @@ import Store from 'config/ConfigureRedux';
 import ConfigureAxios from 'config/ConfigureAPI'; // API Defaults
 import App from './App';
 import moment from 'moment';
+// @ts-ignore
+import { ThroughProvider } from 'react-through';
 
 ConfigureAxios();
 
@@ -30,10 +32,12 @@ if (DebugUtil.isDebugEnabled()) {
 }
 
 ReactDOM.render(
-    <Provider store={Store}>
-        <Router history={History}>
-            <App />
-        </Router>
-    </Provider>,
+    <ThroughProvider>
+        <Provider store={Store}>
+            <Router history={History}>
+                <App />
+            </Router>
+        </Provider>
+    </ThroughProvider>,
     document.getElementById('root') as HTMLElement
 );

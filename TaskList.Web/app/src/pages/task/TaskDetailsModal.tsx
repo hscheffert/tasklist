@@ -3,6 +3,8 @@ import { Row, Col, notification, Spin, Typography, Divider } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import { formatDateTime } from '../../utils/DateTimeHelper';
 import TaskApiController from 'api/TaskApiController';
+import TaskDetailsDTO from 'models/generated/TaskDetailsDTO';
+import TaskStaffDTO from 'models/generated/TaskStaffDTO';
 
 interface TaskDetailsModalProps {
     id: string;
@@ -13,7 +15,7 @@ interface TaskDetailsModalProps {
 
 interface TaskDetailsModalState {
     loading: boolean;
-    task: any;
+    task: TaskDetailsDTO;
 }
 
 class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetailsModalState> {
@@ -21,7 +23,7 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
         super(props);
         this.state = {
             loading: false,
-            task: {}
+            task: TaskDetailsDTO.create()
         };
     }
 
@@ -52,12 +54,18 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
     }
 
     renderTaskStaff = () => {
-        const taskStaffRows = this.props.staffTypes?.map(staffType => ({
-            staffTypeName: staffType.name,
-            name: this.state.task?.taskStaff?.find((x: any) => x.staffTypeId == staffType.staffTypeId)?.name || '',
-        }));
+        if(!this.props.staffTypes.length) return null;
 
-        return taskStaffRows.map((ts: any) => this.renderRow(ts.staffTypeName, ts.name));
+        const taskStaffRows = this.props.staffTypes.map(staffType => {
+            const taskStaffOfThisStaffType = this.state.task?.taskStaff?.filter((ts: TaskStaffDTO) => ts.staffTypeId == staffType.staffTypeId);
+
+            return {
+                staffTypeName: staffType.name,
+                listOfNames: taskStaffOfThisStaffType?.map((ts: TaskStaffDTO) => ts.name).join(', ')
+            }            
+        });
+
+        return taskStaffRows.map((ts: any) => this.renderRow(ts.staffTypeName, ts.listOfNames));
     }
 
     render() {

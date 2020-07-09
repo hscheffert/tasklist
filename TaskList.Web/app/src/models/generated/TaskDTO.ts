@@ -25,6 +25,7 @@ interface TaskDTO {
     updatedDate: moment.Moment | string | null;
     primaryStaffName: string | null;
     assignedStaffMembers: StaffMemberDTO[] | null;
+    rowKey: string | null;
 }
 const TaskDTO: InterfaceConstructor<TaskDTO> = {
     create: (initValues?: {} | null | undefined) => {
@@ -49,6 +50,7 @@ const TaskDTO: InterfaceConstructor<TaskDTO> = {
             updatedDate: null,
             primaryStaffName: null,
             assignedStaffMembers: [],
+            rowKey: "00000000-0000-0000-0000-000000000000",
         },
         initValues);
     }

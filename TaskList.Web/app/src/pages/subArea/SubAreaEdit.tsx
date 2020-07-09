@@ -12,10 +12,12 @@ import * as FormHelper from '../../utils/FormUtil';
 import SubAreaDTO from 'models/generated/SubAreaDTO';
 import SubAreaApiController from 'api/SubAreaApiController';
 import Routes from 'config/ConfigureRoutes';
+import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
 
 interface RouteParams {
     id: string;
     areaId: string;
+    areaName?: string;
 }
 
 interface SubAreaEditState {
@@ -66,9 +68,13 @@ class SubAreaEdit extends React.Component<RouteComponentProps<RouteParams>, SubA
     render() {
         return (
             <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
-                {/* <BreadcrumbsItem name="subArea_edit">
+                <BreadcrumbsItem name="area_edit" to={Routes.AREA_EDIT(this.state.areaId).ToRoute()}>
+                    Edit Area
+                </BreadcrumbsItem>
+                <BreadcrumbsItem name="subArea_edit">
                     {this.state.id !== '0' ? 'Edit Sub Area' : 'New Sub Area'}
-                </BreadcrumbsItem> */}
+                </BreadcrumbsItem>
+                
                 <Spin spinning={this.state.loading}>
                     {this.renderForm()}
                 </Spin>
@@ -141,7 +147,7 @@ class SubAreaEdit extends React.Component<RouteComponentProps<RouteParams>, SubA
              });
 
              // Go back to Area edit
-            HistoryUtil.push(Routes.AREA_EDIT(this.state.subArea.areaId).ToRoute());            
+            HistoryUtil.push(Routes.AREA_EDIT(this.state.areaId).ToRoute());            
         } catch (err) {
             this.setState({ loading: false });
             console.error(err);

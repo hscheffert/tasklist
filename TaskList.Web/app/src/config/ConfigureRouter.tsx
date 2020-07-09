@@ -8,7 +8,6 @@ import PublicLayout from 'layouts/PublicLayout';
 import MainLayout from 'layouts/MainLayout';
 
 /* Pages */
-import HomePage from '../pages/HomePage';
 import PageNotFound from 'pages/public/PageNotFound';
 import Frequency from 'pages/frequency/Frequency';
 import Task from 'pages/task/Task';
@@ -16,7 +15,6 @@ import Area from 'pages/area/Area';
 import StaffType from 'pages/staffType/StaffType';
 import User from 'pages/user/User';
 import TaskEdit from 'pages/task/TaskEdit';
-import SubAreaEdit from 'pages/subArea/SubAreaEdit';
 import Unauthorized from 'pages/Unauthorized';
 import LoggedOut from 'pages/LoggedOut';
 
@@ -29,11 +27,12 @@ const logoutLocation: string = Routes.GET.LOGOUT;
 const RouteLoader = <Switch>
     {/* Task is weird because this is our "base" route as well...so adding task edit here too */}
     <LayoutComponent exact path={Routes.GET.BASE_ROUTE} component={Task} layout={MainLayout} />
-    <LayoutComponent path={Routes.GET.TASK_EDIT} component={TaskEdit} layout={MainLayout} />
-    <LayoutComponent path={Routes.GET.FREQUENCY_BASE} component={Frequency} layout={MainLayout} />
-    <LayoutComponent path={Routes.GET.AREA_BASE} component={Area} layout={MainLayout} />
-    <LayoutComponent path={Routes.GET.STAFF_TYPE_BASE} component={StaffType} layout={MainLayout} />
-    <LayoutComponent path={Routes.GET.USER_BASE} component={User} layout={MainLayout} />
+
+    <LayoutComponent path={Routes.GET.TASK_EDIT} component={TaskEdit} layout={MainLayout} adminOnly={true}/>
+    <LayoutComponent path={Routes.GET.FREQUENCY_BASE} component={Frequency} layout={MainLayout} adminOnly={true}/>
+    <LayoutComponent path={Routes.GET.AREA_BASE} component={Area} layout={MainLayout} adminOnly={true} />
+    <LayoutComponent path={Routes.GET.STAFF_TYPE_BASE} component={StaffType} layout={MainLayout} adminOnly={true}/>
+    <LayoutComponent path={Routes.GET.USER_BASE} component={User} layout={MainLayout} adminOnly={true} />
 
     <LayoutComponent exact path={Routes.GET.LOGGED_OUT} allowAnonymous={true} component={LoggedOut} layout={PublicLayout} />
 

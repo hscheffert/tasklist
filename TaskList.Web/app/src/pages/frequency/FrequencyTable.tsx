@@ -18,6 +18,7 @@ interface FrequencyTableState {
 class FrequencyTable extends React.Component<FrequencyTableProps, FrequencyTableState> {
   private dataTable: DataTable<FrequencyDTO>;
   private customTableColumns: DataTableColumnProps<any>[] = [
+    DataTableUtil.Columns.DisplayOrder(true),
     DataTable.StandardColumns.Text('Name', 'name'),
   ];
 

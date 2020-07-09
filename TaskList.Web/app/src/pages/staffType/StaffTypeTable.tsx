@@ -18,6 +18,7 @@ interface StaffTypeTableState {
 class StaffTypeTable extends React.Component<StaffTypeTableProps, StaffTypeTableState> {
   private dataTable: DataTable<StaffTypeDTO>;
   private customTableColumns: DataTableColumnProps<any>[] = [
+    DataTableUtil.Columns.DisplayOrder(true),
     DataTable.StandardColumns.Text('Name', 'name'),
     DataTable.StandardColumns.Boolean('Is Supervisor', 'isSupervisor', Filterer.BooleanRadio, Renderer.BooleanYesNo),
     DataTable.StandardColumns.Boolean('Allow Multiple', 'allowMultiple', Filterer.BooleanRadio, Renderer.BooleanYesNo),

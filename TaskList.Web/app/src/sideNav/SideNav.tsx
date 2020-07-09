@@ -65,7 +65,6 @@ class SideNav extends React.Component<SideNavProps, SideNavState> {
     }
 
     render() {
-        // TODO: Check current user role or isSupervisor
         const isAdmin = this.props.User.isAdmin;
         const selectedKeys = [this.state.current];        
 

@@ -3,8 +3,9 @@ import SideNav from '../sideNav/SideNav';
 import { Layout } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 import SimpleHeader from './components/SimpleHeader';
+import { GlobalBreadcrumb } from 'pages/shared/GlobalBreadcrumb';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 interface FullscreenAdminLayoutState {
     collapsed: boolean;
@@ -33,6 +34,13 @@ class FullscreenLayout extends React.Component<RouteComponentProps<{}>, Fullscre
                 <Layout>
                     <SideNav />
                     <Layout style={{ padding: '24px' }}>
+                        <GlobalBreadcrumb
+                            separator={<b> / </b>}
+                            finalItem={'b'}
+                            finalProps={{
+                                style: { color: 'red' }
+                            }}
+                        />
                         <Content
                             className="content-background"
                             style={{

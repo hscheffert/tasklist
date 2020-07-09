@@ -70,7 +70,7 @@ export const renderFormSaveButton = () => {
     );
 };
 
-export const renderUserOption = (user: any) => {
+export const renderUserSelectOption = (user: any) => {
     return (
         <Select.Option
             key={user.userId}

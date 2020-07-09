@@ -1,16 +1,19 @@
 import React from 'react';
-import { Table, Button, Space, notification, Checkbox } from 'antd';
+import { Space, notification, Select } from 'antd';
 import TaskDTO from '../../models/generated/TaskDTO';
 import { EditOutlined, MoreOutlined } from '@ant-design/icons';
 import HistoryUtil from '../../utils/HistoryUtil';
 import TaskDetailsModal from './TaskDetailsModal';
 import TaskApiController from '../../api/TaskApiController';
 import StaffTypeApiController from '../../api/StaffTypeApiController';
+import UserApiController from 'api/UserApiController';
 import StaffTypeDTO from 'models/generated/StaffTypeDTO';
-import DataTable, { DataTableColumnProps, Filterer, Renderer } from '../shared/DataTable';
+import DataTable, { DataTableColumnProps } from '../shared/DataTable';
 import DataTableUtil from '../../utils/DataTableUtil';
 import Routes from 'config/ConfigureRoutes';
 import { UserState } from 'redux/UserReducer';
+import UserDTO from 'models/generated/UserDTO';
+import { renderUserSelectOption } from 'utils/FormUtil';
 
 interface TaskTableProps {
   User: UserState;
@@ -22,12 +25,15 @@ interface TaskTableState {
   modalVisible: boolean,
   selectedTaskId: string | null;
   staffTypes: StaffTypeDTO[];
+  users: UserDTO[];
+  selectedUserId: string;
 }
 
 class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
   private dataTable: DataTable<TaskDTO>;
   private customTableColumns: DataTableColumnProps<any>[] = [
-    DataTable.StandardColumns.Text('Name', 'name'),
+    DataTableUtil.Columns.DisplayOrder(true),
+    DataTable.StandardColumns.Text('Name', 'name', { columnProps: { defaultSortOrder: 'descend'}}),
     DataTable.StandardColumns.Text('Area', 'areaName'),
     DataTable.StandardColumns.Text('Sub Area', 'subAreaName'),
     DataTable.StandardColumns.Text('Primary Staff', 'primaryStaffName'),
@@ -42,6 +48,8 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
       modalVisible: false,
       selectedTaskId: null,
       staffTypes: [],
+      users: [],
+      selectedUserId: null // this.props.User.id
     };
   }
 
@@ -52,7 +60,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
         title: 'Actions',
         key: 'actions',
         render: (value: any, record: TaskDTO) => {
-          const moreIcon =  <MoreOutlined onClick={() => this.viewDetails(record.taskId)} />;
+          const moreIcon = <MoreOutlined onClick={() => this.viewDetails(record.taskId)} />;
 
           if (this.props.User.isAdmin) {
             return (
@@ -69,6 +77,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
     });
 
     this.fetchData();
+    this.fetchUsers();
   }
 
   renderTable = () => {
@@ -79,7 +88,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
         ref={(ele: any) => this.dataTable = ele}
         serverSide={false}
         tableProps={{
-          rowKey: 'taskId',
+          rowKey: 'rowKey',
           loading: this.state.loading,
           sortDirections: ['ascend', 'descend'],
         }}
@@ -91,9 +100,24 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
     );
   }
 
+  renderUserDropdownFilter = () => {
+    return (
+      <Select
+        placeholder="Select Person"
+        style={{ width: '200px' }}
+        allowClear={true} 
+        value={this.state.selectedUserId}
+        onChange={this.handleSelectUser}>
+        {this.state.users.map(renderUserSelectOption)}
+      </Select>
+    );
+  }
+
   render() {
     return (
       <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
+        {this.renderUserDropdownFilter()}
+
         {this.renderTable()}
 
         <TaskDetailsModal
@@ -107,14 +131,16 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
   }
 
   private fetchData = async () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true });   
+
     try {
-      const result = await TaskApiController.getAll();
+      const result = await TaskApiController.getAllUserTasks(this.state.selectedUserId || '');
 
       this.setState({
         loading: false,
         data: result.data,
       });
+
       this.dataTable.refresh();
     } catch (err) {
       this.setState({ loading: false });
@@ -131,8 +157,6 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
       return;
     }
 
-    console.log('fetching staff types');
-
     this.setState({ loading: true });
     try {
       const result = await StaffTypeApiController.getAll();
@@ -140,6 +164,29 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
       this.setState({
         loading: false,
         staffTypes: result.data,
+      });
+    } catch (err) {
+      this.setState({ loading: false });
+      console.error(err);
+      notification.error({
+        message: err.message,
+        description: err.description
+      });
+    }
+  }
+
+  private fetchUsers = async () => {
+    if (this.state.users.length) {
+      return;
+    }
+
+    this.setState({ loading: true });
+    try {
+      const result = await UserApiController.getAll();
+
+      this.setState({
+        loading: false,
+        users: result.data,
       });
     } catch (err) {
       this.setState({ loading: false });
@@ -169,6 +216,13 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
         description: err.description
       });
     }
+  }
+
+  private handleSelectUser = (value: string) => {
+    this.setState({
+      selectedUserId: value
+    },     
+    () => this.fetchData());
   }
 
   private editTask = (taskId: string | null) => {

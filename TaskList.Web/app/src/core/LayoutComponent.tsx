@@ -23,8 +23,8 @@ interface LayoutComponentProps extends RouteProps {
     component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
     /** The layout to render the component in */
     layout: ProjectLayouts;
-
     allowAnonymous?: boolean;
+    adminOnly?: boolean;
 
     // Other props not passed it, but are coming from the context somewhere
     /**
@@ -82,13 +82,16 @@ class LayoutComponent extends React.Component<LayoutComponentProps, LayoutCompon
         if (Component == null) {
             throw new Error('\'component\' prop must be set!');
         }
+        
         // Missing the layout is lazy but we DO have a default
         if (Layout == null) {
             Layout = defaultLayout;
         }
 
-        // console.log(this.props.User);
-        if (!this.props.allowAnonymous && !this.props.User.isLoggedIn) {
+        const userDoesNotHavePermissionForAdminPage = this.props.adminOnly && !this.props.User.isAdmin;
+        const userIsNotLoggedInForPrivatePage = !this.props.allowAnonymous && !this.props.User.isLoggedIn;
+
+        if (userIsNotLoggedInForPrivatePage || userDoesNotHavePermissionForAdminPage) {
             return <Redirect to={unauthorizedLocation} from={routerContext.location.pathname} />;
         }
 

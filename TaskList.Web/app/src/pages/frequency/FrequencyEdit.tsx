@@ -12,6 +12,7 @@ import * as FormHelper from '../../utils/FormUtil';
 import FrequencyApiController from 'api/FrequencyApiController';
 import FrequencyDTO from 'models/generated/FrequencyDTO';
 import Routes from 'config/ConfigureRoutes';
+import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
 
 interface RouteParams {
     id: string;
@@ -61,9 +62,10 @@ class FrequencyEdit extends React.Component<RouteComponentProps<RouteParams>, Fr
     render() {
         return (
             <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
-                {/* <BreadcrumbsItem name="frequency_edit">
+                <BreadcrumbsItem name="frequency_edit">
                     {this.state.id !== '0' ? 'Edit Frequency' : 'New Frequency'}
-                </BreadcrumbsItem> */}
+                </BreadcrumbsItem>
+                
                 <Spin spinning={this.state.loading}>
                     {this.renderForm()}
                 </Spin>

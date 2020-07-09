@@ -15,6 +15,7 @@ import * as FormHelper from '../../utils/FormUtil';
 import UserApiController from 'api/UserApiController';
 import UserDTO from 'models/generated/UserDTO';
 import Routes from 'config/ConfigureRoutes';
+import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
 
 interface RouteParams {
     id: string;
@@ -88,7 +89,7 @@ class UserEdit extends React.Component<RouteComponentProps<RouteParams>, UserEdi
                     label="Supervisor"
                     name="supervisorId">
                     <Select allowClear={true}>
-                        {this.state.supervisors.map(FormHelper.renderUserOption)}
+                        {this.state.supervisors.map(FormHelper.renderUserSelectOption)}
                     </Select>
                 </Form.Item>
 
@@ -101,9 +102,9 @@ class UserEdit extends React.Component<RouteComponentProps<RouteParams>, UserEdi
     render() {
         return (
             <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
-                {/* <BreadcrumbsItem name="user_edit">
+                <BreadcrumbsItem name="user_edit">
                     {this.state.id !== '0' ? 'Edit User' : 'New User'}
-                </BreadcrumbsItem> */}
+                </BreadcrumbsItem>
 
                 <Spin spinning={this.state.loading}>
                     {this.renderForm()}

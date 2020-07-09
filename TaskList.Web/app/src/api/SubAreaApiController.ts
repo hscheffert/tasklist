@@ -9,6 +9,12 @@ class SubAreaApiControllerInternal {
         let url = this.RouteGetAll();
         return HttpApi.RestRequest<any, SubAreaDTO[]>(null, 'get', url, requestOptions);
     }
+    // get: api/subAreas/getAllByAreaId/${encodeURIComponent(areaId)}
+    public RouteGetAllByAreaId = (areaId: string) => `api/subAreas/getAllByAreaId/${encodeURIComponent(areaId)}`;
+    public getAllByAreaId(areaId: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<SubAreaDTO[]>> {
+        let url = this.RouteGetAllByAreaId(areaId);
+        return HttpApi.RestRequest<any, SubAreaDTO[]>(null, 'get', url, requestOptions);
+    }
     // get: api/subAreas/${encodeURIComponent(id)}
     public RouteGet = (id: string) => `api/subAreas/${encodeURIComponent(id)}`;
     public get(id: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<SubAreaDTO>> {

@@ -10,15 +10,18 @@ import SubAreaApiController from 'api/SubAreaApiController';
 interface SubAreaTableProps {
     subAreas: SubAreaDTO[];
     areaId: string;
+    areaName: string;    
 }
 
 interface SubAreaTableState {
+    subAreas: SubAreaDTO[];
     loading: boolean;
 }
 
 class SubAreaTable extends React.Component<SubAreaTableProps, SubAreaTableState> {
     private dataTable: DataTable<SubAreaDTO>;
     private customTableColumns: DataTableColumnProps<any>[] = [
+        DataTableUtil.Columns.DisplayOrder(true),
         DataTable.StandardColumns.Text('Name', 'name'),
     ];
 
@@ -26,14 +29,21 @@ class SubAreaTable extends React.Component<SubAreaTableProps, SubAreaTableState>
         super(props);
         this.state = {
             loading: false,
+            subAreas: this.props.subAreas,
         };
     }
 
     componentDidMount() {
         this.customTableColumns.push(DataTableUtil.Columns.Active(this.handleActiveToggle));
         this.customTableColumns.push(DataTableUtil.Columns.Actions('subAreaId', this.editSubArea));
+        this.fetchData();
     }
 
+    componentDidUpdate(prevProps:SubAreaTableProps) {
+        if(!prevProps.subAreas.length && this.props.subAreas.length) {
+            this.dataTable.refresh();
+        }
+    }
 
     renderTable = () => {
         const addButton = DataTable.TableButtons.Add("Add Sub Area", Routes.SUBAREA_EDIT('0', this.props.areaId).ToRoute());
@@ -48,7 +58,7 @@ class SubAreaTable extends React.Component<SubAreaTableProps, SubAreaTableState>
                     sortDirections: ['ascend', 'descend'],
                 }}
                 columns={this.customTableColumns}
-                data={this.props.subAreas}
+                data={this.state.subAreas}
                 globalSearch={true}
                 buttonBar={[addButton]}
             />
@@ -76,6 +86,31 @@ class SubAreaTable extends React.Component<SubAreaTableProps, SubAreaTableState>
             const result = await SubAreaApiController.toggle(subArea.subAreaId);
 
             this.setState({ loading: false });
+            this.fetchData();
+        } catch (err) {
+            this.setState({ loading: false });
+            console.error(err);
+            notification.error({
+                message: err.message,
+                description: err.description
+            });
+        }
+    }
+
+    private fetchData = async () => {
+        if(this.props.areaId === '0') return;
+
+        this.setState({ loading: true });
+
+        try {
+            const result = await SubAreaApiController.getAllByAreaId(this.props.areaId);
+
+            this.setState({
+                loading: false,
+                subAreas: result.data
+            });
+
+            this.dataTable.refresh();
         } catch (err) {
             this.setState({ loading: false });
             console.error(err);

@@ -15,6 +15,7 @@ import SubAreaTable from '../subArea/SubAreaTable';
 import AreaDTO from 'models/generated/AreaDTO';
 import AreaApiController from 'api/AreaApiController';
 import Routes from 'config/ConfigureRoutes';
+import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
 
 interface RouteParams {
     id: string;
@@ -62,26 +63,38 @@ class AreaEdit extends React.Component<RouteComponentProps<RouteParams>, AreaEdi
         );
     }
 
+    renderSubAreaStuff = () => {
+        return (
+            <div>
+                <Divider />
+                <Typography.Title level={4}>Sub Areas</Typography.Title>
+                <SubAreaTable
+                    areaId={this.state.id}
+                    areaName={this.state.area.name}
+                    subAreas={this.state.area?.subAreas}
+                />
+            </div>
+        );
+    }
+
     render() {
         return (
             <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
-                {/* <BreadcrumbsItem name="area_edit">
+                <BreadcrumbsItem name="area_edit" to={Routes.AREA_EDIT(this.state.area.areaId)}>
                     {this.state.id !== '0' ? 'Edit Area' : 'New Area'}
-                </BreadcrumbsItem> */}
+                </BreadcrumbsItem>
 
                 <Spin spinning={this.state.loading}>
                     {this.renderForm()}
-                    <Divider />
-                    <Typography.Title level={4}>Sub Areas</Typography.Title>
-                    <SubAreaTable areaId={this.state.area.areaId} subAreas={this.state.area.subAreas} />
+                    {this.state.id !== '0' && this.renderSubAreaStuff()}
                 </Spin>
             </Space>
         );
     }
 
     private fetchData = async () => {
-        if(this.state.id === '0') return;
-        
+        if (this.state.id === '0') return;
+
         this.setState({ loading: true });
 
         try {
@@ -91,10 +104,10 @@ class AreaEdit extends React.Component<RouteComponentProps<RouteParams>, AreaEdi
                 ...result.data
             });
 
-            this.setState({ 
+            this.setState({
                 loading: false,
                 area: result.data
-             });
+            });
         } catch (err) {
             this.setState({ loading: false });
             console.error(err);
@@ -138,11 +151,15 @@ class AreaEdit extends React.Component<RouteComponentProps<RouteParams>, AreaEdi
         this.setState({ loading: true });
         try {
             const result = await AreaApiController.post(dto);
-            
+
             this.setState({ loading: false });
-            
-            // Go straight to edit with the returned id
-            HistoryUtil.push(Routes.AREA_EDIT(result.data).ToRoute());
+
+            // If creating, go straight to edit with the returned id
+            if(this.state.id === '0') {
+                HistoryUtil.push(Routes.AREA_EDIT(result.data).ToRoute());
+            } else {
+                HistoryUtil.push(Routes.GET.AREA_BASE);
+            }
         } catch (err) {
             this.setState({ loading: false });
             console.error(err);

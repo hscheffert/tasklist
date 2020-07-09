@@ -13,6 +13,7 @@ import * as FormHelper from '../../utils/FormUtil';
 import StaffTypeDTO from 'models/generated/StaffTypeDTO';
 import StaffTypeApiController from 'api/StaffTypeApiController';
 import Routes from 'config/ConfigureRoutes';
+import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
 
 interface RouteParams {
     id: string;
@@ -78,9 +79,10 @@ class StaffTypeEdit extends React.Component<RouteComponentProps<RouteParams>, St
     render() {
         return (
             <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
-                {/* <BreadcrumbsItem name="staffType_edit">
+                <BreadcrumbsItem name="staffType_edit">
                     {this.state.id !== '0' ? 'Edit Staff Type' : 'New Staff Type'}
-                </BreadcrumbsItem> */}
+                </BreadcrumbsItem>
+                
                 <Spin spinning={this.state.loading}>
                     {this.renderForm()}
                 </Spin>
