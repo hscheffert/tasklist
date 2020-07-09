@@ -4,12 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskList.Business.Helpers;
 using TaskList.Core.DTOs;
-using TaskList.Data.Model;
 
 namespace TaskList.Web.Controllers
 {
-    [Authorize(Policy = "AdminRole")]
-    //[Authorize(Roles = "Admin")]
     [Route("api/areas")]
     [ApiController]
     public class AreaApiController : ControllerBase
@@ -31,6 +28,7 @@ namespace TaskList.Web.Controllers
 
         // POST api/areas
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] AreaDTO dto)
         {
             return Areas.Save(dto);
@@ -38,6 +36,7 @@ namespace TaskList.Web.Controllers
 
         // PUT api/areas/toggle/5
         [HttpPut]
+        [Authorize(Policy = "Admin")]
         [Route("toggle/{id:guid}")]
         public void Toggle(Guid id)
         {

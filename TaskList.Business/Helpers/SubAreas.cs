@@ -61,6 +61,31 @@ namespace TaskList.Business.Helpers
             }
         }
 
+        public static List<SubAreaDTO> GetAllByAreaId(Guid areaId)
+        {
+            using (var db = new DB())
+            {
+                var dtos = db.SubArea
+                    .Where(x => x.AreaId == areaId)
+                    .Select(x => new SubAreaDTO()
+                    {
+                        SubAreaId = x.SubAreaId,
+                        AreaId = x.AreaId,
+                        Name = x.Name,
+                        DisplayOrder = x.DisplayOrder,
+                        IsActive = x.IsActive,
+                        CreatedBy = x.CreatedBy,
+                        CreatedDate = x.CreatedDate,
+                        UpdatedBy = x.UpdatedBy,
+                        UpdatedDate = x.UpdatedDate,
+                    });
+
+                return dtos
+                    .OrderBy(x => x.DisplayOrder)
+                    .ToList();
+            }
+        }
+
         public static Guid? Save(SubAreaDTO toSave)
         {
             // TODO: Should be current user

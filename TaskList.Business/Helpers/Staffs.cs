@@ -40,7 +40,7 @@ namespace TaskList.Business.Helpers
         {
             using (var db = new DB())
             {
-                var dtos = db.Staff
+                var dtos = db.Staff                    
                     .Select(x => new StaffDTO()
                     {
                         StaffId = x.StaffId,

@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+﻿using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
+using System.Threading.Tasks;
 using TaskList.Business.Helpers;
 using TaskList.Core.DTOs;
 
@@ -27,26 +24,13 @@ namespace TaskList.Web.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("login")]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
             if (User.Identity.IsAuthenticated) // Is User authenticated by Azure AD
             {
                 var currentUser = _httpContextAccessor.HttpContext.User;
                 var email = currentUser.FindFirst(ClaimTypes.Email);
                 var user = Users.GetByEmail(email?.Value);
-
-                var claims = new List<Claim>();
-                claims.Add(new Claim("Role", "User"));
-
-                if (user != null && user.IsSupervisor)
-                {
-                    claims.Add(new Claim("Role", "Admin"));
-                    claims.Add(new Claim("AdminRole", "true"));                    
-                }
-
-                var identity = new ClaimsIdentity(claims, "UserSpecified");
-                currentUser.AddIdentity(identity);
-                User.AddIdentity(identity);
 
                 if (user == null && !String.IsNullOrEmpty(email.Value))
                 {
@@ -57,7 +41,7 @@ namespace TaskList.Web.Controllers
                         FirstName = currentUser.FindFirst(ClaimTypes.GivenName).Value,
                         LastName = currentUser.FindFirst(ClaimTypes.Surname).Value,
                         IsActive = true,
-                        IsSupervisor = false, // or check their group
+                        IsSupervisor = false,
                         SupervisorId = null,
                     });
                 }
@@ -68,7 +52,7 @@ namespace TaskList.Web.Controllers
                 return Challenge(AzureADDefaults.OpenIdScheme);
             }
 
-            // Redirect to home page is successfully authenticated
+            // Redirect to home page if successfully authenticated
             return Redirect("/");
         }
 
@@ -80,6 +64,9 @@ namespace TaskList.Web.Controllers
             var currentUser = _httpContextAccessor.HttpContext.User;
             var email = currentUser.FindFirst(ClaimTypes.Email);
             var user = Users.GetByEmail(email?.Value);
+
+            // Note: Would be good to add some check here for user.IsSupervisor compared to the AdminRole claim
+            // to ensure they are still in sync...but for now, ignoring that scenario and assuming they log in/out often.
 
             return user;
         }

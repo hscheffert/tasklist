@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskList.Business.Helpers;
 using TaskList.Core.DTOs;
-using TaskList.Core.Exceptions;
 
 namespace TaskList.Web.Controllers
 {
-    [Authorize(Policy = "Admin")]
     [Route("api/users")]
     [ApiController]
     public class UserApiController : ControllerBase
@@ -38,6 +36,7 @@ namespace TaskList.Web.Controllers
 
         // POST api/users
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] UserDTO dto)
         {
             return Users.Save(dto);            
@@ -45,6 +44,7 @@ namespace TaskList.Web.Controllers
 
         // PUT api/users/toggle/5
         [HttpPut]
+        [Authorize(Policy = "Admin")]
         [Route("toggle/{id:guid}")]
         public void Toggle(Guid id)
         {

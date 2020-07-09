@@ -91,6 +91,7 @@ namespace TaskList.Business.Helpers
                     .Include(x => x.Staff).ThenInclude(x => x.User)
                     .Select(x => new TaskDTO()
                     {
+                        RowKey = x.TaskId,
                         TaskId = x.TaskId,
                         Name = x.Name,
                         AreaId = x.Area.AreaId,
@@ -230,7 +231,7 @@ namespace TaskList.Business.Helpers
                 .Select(x => new StaffDTO()
                 {
                     StaffId = (Guid)(x.StaffId != null ? x.StaffId : Guid.Empty),
-                    StaffTypeId = (Guid) x.StaffTypeId,
+                    StaffTypeId = (Guid)x.StaffTypeId,
                     UserId = (Guid)x.UserId,
                     TaskId = taskId,
                     IsActive = taskDetails.IsActive
@@ -239,6 +240,55 @@ namespace TaskList.Business.Helpers
             foreach (StaffDTO dto in staffDtos)
             {
                 Staffs.Save(dto);
+            }
+        }
+
+        public static List<TaskDTO> GetAllUsersTasks(Guid? userId)
+        {
+            using (var db = new DB())
+            {
+                var dtos = db.Staff
+                    .Include(x => x.Task.Area)
+                    .Include(x => x.Task.SubArea)
+                    .Include(x => x.Task.Frequency)
+                    .Where(x => x.UserId == userId)
+                    .Select(x => new TaskDTO()
+                    {
+                        RowKey = x.StaffId,
+                        TaskId = x.TaskId,
+                        Name = x.Task.Name,
+                        AreaId = x.Task.Area.AreaId,
+                        AreaName = x.Task.Area.Name,
+                        SubAreaId = x.Task.SubArea.SubAreaId,
+                        SubAreaName = x.Task.SubArea.Name,
+                        FrequencyId = x.Task.Frequency.FrequencyId,
+                        FrequencyName = x.Task.Frequency.Name,
+                        Notes = x.Task.Notes,
+                        IsInPolicyTech = x.Task.IsInPolicyTech,
+                        ProcedureFileName = x.Task.ProcedureFileName,
+                        PrimaryStaffName = x.Task.Staff
+                            .Where(s => s.StaffType.Name == StaffTypeNames.Primary).Select(x => x.User.LastName + ", " + x.User.FirstName)
+                            .FirstOrDefault(),
+                        AssignedStaffMembers = x.Task.Staff.Select(s => new StaffMemberDTO()
+                        {
+                            StaffTypeId = s.StaffTypeId,
+                            StaffTypeName = s.StaffType.Name,
+                            FirstName = s.User.FirstName,
+                            LastName = s.User.LastName,
+                            UserId = s.UserId,
+                            IsSupervisor = s.User.IsSupervisor,
+                        }),
+                        DisplayOrder = x.Task.DisplayOrder,
+                        IsActive = x.Task.IsActive,
+                        CreatedBy = x.Task.CreatedBy,
+                        CreatedDate = x.Task.CreatedDate,
+                        UpdatedBy = x.Task.UpdatedBy,
+                        UpdatedDate = x.Task.UpdatedDate
+                    });
+
+                return dtos
+                    .OrderBy(t => t.DisplayOrder)
+                    .ToList();
             }
         }
     }

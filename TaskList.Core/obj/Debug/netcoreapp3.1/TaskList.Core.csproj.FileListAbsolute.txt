@@ -13,6 +13,6 @@ F:\Projects\TOS\TaskList\TaskList.Core\bin\Debug\netcoreapp3.1\TaskList.Core.pdb
 F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.csprojAssemblyReference.cache
 F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.AssemblyInfoInputs.cache
 F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.AssemblyInfo.cs
-F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.csproj.CoreCompileInputs.cache
 F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.dll
 F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.pdb
+F:\Projects\TOS\TaskList\TaskList.Core\obj\Debug\netcoreapp3.1\TaskList.Core.csproj.CoreCompileInputs.cache

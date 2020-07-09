@@ -7,7 +7,6 @@ using TaskList.Core.DTOs;
 
 namespace TaskList.Web.Controllers
 {
-    [Authorize(Policy = "Admin")]
     [Route("api/staff")]
     [ApiController]
     public class StaffApiController : ControllerBase
@@ -29,6 +28,7 @@ namespace TaskList.Web.Controllers
 
         // POST api/staff
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] StaffDTO dto)
         {
             return Staffs.Save(dto);
@@ -36,6 +36,7 @@ namespace TaskList.Web.Controllers
 
         // PUT api/staff/toggle/5
         [HttpPut]
+        [Authorize(Policy = "Admin")]
         [Route("toggle/{id:guid}")]
         public void Toggle(Guid id)
         {

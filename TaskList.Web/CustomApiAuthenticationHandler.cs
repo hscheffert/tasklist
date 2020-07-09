@@ -22,6 +22,6 @@ namespace TaskList.Web
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             return Task.FromResult(AuthenticateResult.NoResult());
-        }
+        }        
     }
 }

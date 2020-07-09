@@ -32,7 +32,9 @@ namespace TaskList.Business.Helpers
                                    CreatedDate = a.CreatedDate,
                                    UpdatedBy = a.UpdatedBy,
                                    UpdatedDate = a.UpdatedDate,
-                                   SubAreas = a.SubArea.Select(x => new SubAreaDTO()
+                                   SubAreas = a.SubArea
+                                        .OrderBy(s => s.DisplayOrder)
+                                        .Select(x => new SubAreaDTO()
                                    {
                                        SubAreaId = x.SubAreaId,
                                        AreaId = x.AreaId,
@@ -71,14 +73,18 @@ namespace TaskList.Business.Helpers
                                    CreatedDate = a.CreatedDate,
                                    UpdatedBy = a.UpdatedBy,
                                    UpdatedDate = a.UpdatedDate,
-                                   SubAreas = a.SubArea.Select(s => new SubAreaDTO()
+                                   SubAreas = a.SubArea
+                                        .OrderBy(s => s.DisplayOrder)
+                                        .Select(s => new SubAreaDTO()
                                    {
                                        SubAreaId = s.SubAreaId,
                                        AreaId = s.AreaId,
                                        Name = s.Name,
                                        IsActive = s.IsActive,
                                    })
-                               }).ToList();
+                               })
+                               .OrderBy(x => x.DisplayOrder)
+                               .ToList();
 
                 return areaDTOs;
             }

@@ -13,7 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using System;
-using Microsoft.AspNetCore.Identity;
+using TaskList.Business.Helpers;
+using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace TaskList.Web
 {
@@ -32,13 +34,14 @@ namespace TaskList.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureAuthentication(services);                       
+            ConfigureAuthentication(services);
 
             Configuration.GetSection("AppSettings").Bind(AppSettings.Default);
 
             services.AddControllersWithViews();
 
-            services.AddDbContext<DB>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DB>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -96,19 +99,15 @@ namespace TaskList.Web
 
         private void ConfigureAuthentication(IServiceCollection services)
         {
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<DB>()
-                .AddClaimsPrincipalFactory<MyUserClaimsPrincipalFactory>();
-
             services.AddAuthorization(options =>
             {
-                // options.AddPolicy("AdminRole", policy => policy.RequireClaim("AdminRole"));
+                // options.AddPolicy("Admin", policy => policy.RequireClaim(AppSettings.Default.AdminClaim));
                 options.AddPolicy(
-                    "AdminRole",
-                    policy => policy.AddRequirements(new IsAdminRequirement("Admin")));
+                    "Admin",
+                    policy => policy.AddRequirements(new HasClaimRequirement(AppSettings.Default.AdminRoleClaim)));
             });
 
-            services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
+            services.AddSingleton<IAuthorizationHandler, HasClaimHandler>();
 
             services.AddAuthentication(options =>
             {
@@ -126,8 +125,31 @@ namespace TaskList.Web
             {
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.None; // SameSiteMode.Lax;
+                options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.MaxAge = new TimeSpan(7, 0, 0, 0);
+                options.Events = new CookieAuthenticationEvents() {};
+            });
+            services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+            {
+                options.Events = new OpenIdConnectEvents
+                {
+                    // Invoked when an IdToken has been validated and produced an AuthenticationTicket.
+                    // AKA when the user logs in with Azure AD
+                    OnTokenValidated = async (ctx) =>
+                    {
+                        var email = ctx.Principal.FindFirst(ClaimTypes.Email);
+                        var user = Users.GetByEmail(email?.Value);
+
+                        // Could also do ClaimTypes.Role and set "Admin" or "User"
+                        // Add the AdminRole claim if they are a supervisor
+                        if (user != null && user.IsSupervisor)
+                        {
+                            var claims = new List<Claim> { new Claim(AppSettings.Default.AdminRoleClaim, "true") };
+                            var appIdentity = new ClaimsIdentity(claims);
+                            ctx.Principal.AddIdentity(appIdentity);
+                        }
+                    },
+                };
             });
 
             services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
@@ -143,10 +165,6 @@ namespace TaskList.Web
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
-
-
-            // claims transformation is run after every Authenticate call
-            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
         }
     }
 }

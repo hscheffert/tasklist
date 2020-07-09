@@ -14,5 +14,6 @@
         }
 
         public bool IsDevelopment => Program.EnvironmentName == "Development";
+        public string AdminRoleClaim => "AdminRole";
     }
 }

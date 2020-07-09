@@ -22,7 +22,7 @@ F:\Projects\TOS\TaskList\TaskList.Business\bin\Debug\netcoreapp3.1\TaskList.Data
 F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csprojAssemblyReference.cache
 F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.AssemblyInfoInputs.cache
 F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.AssemblyInfo.cs
-F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csproj.CoreCompileInputs.cache
 F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csproj.CopyComplete
 F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.dll
 F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.pdb
+F:\Projects\TOS\TaskList\TaskList.Business\obj\Debug\netcoreapp3.1\TaskList.Business.csproj.CoreCompileInputs.cache

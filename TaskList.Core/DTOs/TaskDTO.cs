@@ -37,5 +37,7 @@ namespace TaskList.Core.DTOs
         public string PrimaryStaffName { get; set; }
         // public IEnumerable<StaffDTO> Staff { get; set; }
         public IEnumerable<StaffMemberDTO> AssignedStaffMembers { get; set; }
+        // public Guid? StaffId { get; set; }
+        public Guid RowKey { get; set; }
     }
 }

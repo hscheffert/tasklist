@@ -7,7 +7,6 @@ using TaskList.Core.DTOs;
 
 namespace TaskList.Web.Controllers
 {
-    [Authorize(Policy = "Admin")]
     [Route("api/subAreas")]
     [ApiController]
     public class SubAreaApiController : ControllerBase
@@ -17,6 +16,14 @@ namespace TaskList.Web.Controllers
         public IEnumerable<SubAreaDTO> GetAll()
         {
             return SubAreas.GetAll();
+        }
+
+        // GET: api/subAreas/getAllByAreaId
+        [HttpGet]
+        [Route("getAllByAreaId/{areaId:guid}")]
+        public IEnumerable<SubAreaDTO> GetAllByAreaId(Guid areaId)
+        {
+            return SubAreas.GetAllByAreaId(areaId);
         }
 
         // GET api/subAreas/5
@@ -29,6 +36,7 @@ namespace TaskList.Web.Controllers
 
         // POST api/subAreas
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] SubAreaDTO dto)
         {
             return SubAreas.Save(dto);
@@ -37,6 +45,7 @@ namespace TaskList.Web.Controllers
         // PUT api/subAreas/toggle/5
         [HttpPut]
         [Route("toggle/{id:guid}")]
+        [Authorize(Policy = "Admin")]
         public void Toggle(Guid id)
         {
             SubAreas.Toggle(id);

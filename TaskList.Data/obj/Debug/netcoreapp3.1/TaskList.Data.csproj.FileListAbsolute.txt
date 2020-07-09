@@ -18,7 +18,7 @@ F:\Projects\TOS\TaskList\TaskList.Data\bin\Debug\netcoreapp3.1\TaskList.Data.pdb
 F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.csprojAssemblyReference.cache
 F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.AssemblyInfoInputs.cache
 F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.AssemblyInfo.cs
-F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.csproj.CoreCompileInputs.cache
 F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.dll
 F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.pdb
 F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.genruntimeconfig.cache
+F:\Projects\TOS\TaskList\TaskList.Data\obj\Debug\netcoreapp3.1\TaskList.Data.csproj.CoreCompileInputs.cache

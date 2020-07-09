@@ -19,6 +19,19 @@ namespace TaskList.Web.Controllers
             return Tasks.GetAll();
         }
 
+        // GET: api/tasks/getAllUserTasks/5
+        [HttpGet]
+        [Route("getAllUserTasks/{id:guid?}")]
+        public IEnumerable<TaskDTO> GetAllUserTasks(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return Tasks.GetAll();
+            }
+
+            return Tasks.GetAllUsersTasks((Guid)id);
+        }
+
         // GET api/tasks/5
         [HttpGet]
         [Route("{id:guid}")]
@@ -37,6 +50,7 @@ namespace TaskList.Web.Controllers
 
         // POST api/tasks
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] TaskDetailsDTO dto)
         {
             return Tasks.Save(dto);
@@ -44,6 +58,7 @@ namespace TaskList.Web.Controllers
 
         // PUT api/tasks/toggle/5
         [HttpPut]
+        [Authorize(Policy = "Admin")]
         [Route("toggle/{id:guid}")]
         public void Toggle(Guid id)
         {
