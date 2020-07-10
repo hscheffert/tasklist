@@ -4,9 +4,9 @@ import { Layout } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 import SimpleHeader from './components/SimpleHeader';
 import { GlobalBreadcrumb } from 'pages/shared/GlobalBreadcrumb';
+import CustomFooter from './components/CustomFooter';
 
 const { Content } = Layout;
-
 interface FullscreenAdminLayoutState {
     collapsed: boolean;
 }
@@ -36,18 +36,17 @@ class FullscreenLayout extends React.Component<RouteComponentProps<{}>, Fullscre
                     <Layout style={{ padding: '24px' }}>
                         <GlobalBreadcrumb
                             separator={<b> / </b>}
-                            finalItem={'b'}
-                            finalProps={{
-                                style: { color: 'red' }
-                            }}
+                            finalItem={'b'}      
                         />
                         <Content
                             className="content-background"
                             style={{
-                                margin: 0,
+                                margin: 0
                             }}>
                             {this.props.children}
                         </Content>
+
+                        <CustomFooter />
                     </Layout>
                 </Layout>
             </Layout>
