@@ -14,6 +14,7 @@ interface SubAreaDTO {
     createdDate: moment.Moment | string;
     updatedBy: string | null;
     updatedDate: moment.Moment | string | null;
+    areaName: string | null;
 }
 const SubAreaDTO: InterfaceConstructor<SubAreaDTO> = {
     create: (initValues?: {} | null | undefined) => {
@@ -28,6 +29,7 @@ const SubAreaDTO: InterfaceConstructor<SubAreaDTO> = {
             createdDate: new Date(0).toISOString(),
             updatedBy: null,
             updatedDate: null,
+            areaName: null,
         },
         initValues);
     }

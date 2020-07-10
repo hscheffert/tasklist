@@ -10,5 +10,6 @@ namespace TaskList.Core.DTOs
         public Guid StaffTypeId { get; set; }
         public string StaffTypeName { get; set; }
         public string Name { get; set; }
+        public bool IsActive { get; set; }
     }
 }

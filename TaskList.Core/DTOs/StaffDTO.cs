@@ -28,8 +28,5 @@ namespace TaskList.Core.DTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string StaffTypeName { get; set; }
-        //public StaffTypeDTO StaffType { get; set; }
-        //public TaskDTO Task { get; set; }
-        //public UserDTO User { get; set; }
     }
 }

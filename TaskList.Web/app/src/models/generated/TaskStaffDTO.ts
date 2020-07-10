@@ -11,6 +11,7 @@ interface TaskStaffDTO {
     staffTypeId: string | null;
     staffTypeName: string | null;
     name: string | null;
+    isActive: boolean;
 }
 const TaskStaffDTO: InterfaceConstructor<TaskStaffDTO> = {
     create: (initValues?: {} | null | undefined) => {
@@ -22,6 +23,7 @@ const TaskStaffDTO: InterfaceConstructor<TaskStaffDTO> = {
             staffTypeId: "00000000-0000-0000-0000-000000000000",
             staffTypeName: null,
             name: null,
+            isActive: false,
         },
         initValues);
     }

@@ -9,6 +9,12 @@ class FrequencyApiControllerInternal {
         let url = this.RouteGetAll();
         return HttpApi.RestRequest<any, FrequencyDTO[]>(null, 'get', url, requestOptions);
     }
+    // get: api/frequencies/getAllActive
+    public RouteGetAllActive = () => `api/frequencies/getAllActive`;
+    public getAllActive(requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<FrequencyDTO[]>> {
+        let url = this.RouteGetAllActive();
+        return HttpApi.RestRequest<any, FrequencyDTO[]>(null, 'get', url, requestOptions);
+    }
     // get: api/frequencies/${encodeURIComponent(id)}
     public RouteGet = (id: string) => `api/frequencies/${encodeURIComponent(id)}`;
     public get(id: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<FrequencyDTO>> {

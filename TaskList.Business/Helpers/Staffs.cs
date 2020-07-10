@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaskList.Core.DTOs;
+using TaskList.Core.Exceptions;
 using TaskList.Data.Model;
 
 namespace TaskList.Business.Helpers
@@ -40,7 +42,14 @@ namespace TaskList.Business.Helpers
         {
             using (var db = new DB())
             {
-                var dtos = db.Staff                    
+                IQueryable<Staff> query = db.Staff;
+
+                if (activeOnly)
+                {
+                    query = query.Where(x => x.IsActive);
+                }
+
+                var dtos = query
                     .Select(x => new StaffDTO()
                     {
                         StaffId = x.StaffId,
@@ -58,20 +67,13 @@ namespace TaskList.Business.Helpers
                         UpdatedDate = x.UpdatedDate
                     });
 
-                if (activeOnly)
-                {
-                    dtos = dtos.Where(x => x.IsActive);
-                }
-
-                return dtos.ToList();
+                return dtos
+                    .ToList();
             }
         }
 
-        public static Guid? Save(StaffDTO toSave)
+        public static Guid? Save(StaffDTO toSave, string currentUserEmail)
         {
-            // TODO: Should be current user
-            var tempEmail = "hscheffert@qci.com";
-
             using (var db = new DB())
             {
                 try
@@ -80,7 +82,55 @@ namespace TaskList.Business.Helpers
                         .Where(x => x.StaffId == toSave.StaffId)
                         .FirstOrDefault();
 
-                    if(entity == null)
+                    var currentTaskStaff = db.Staff
+                        .Where(x => x.TaskId == toSave.TaskId);
+                    var duplicateEntriesForThisUser = currentTaskStaff
+                        .Where(x => x.UserId == toSave.UserId);
+
+                    // Check for duplicate entries for this user/task
+                    if(duplicateEntriesForThisUser.Any())
+                    {
+                        throw new EndUserException("User is already included in this Task Staff.");                        
+                    }
+
+                    // Make sure everything is active
+                    TaskDTO task = Tasks.GetByID(toSave.TaskId);
+                    if (!task.IsActive)
+                    {
+                        throw new Exception("Task " + task.Name + " is inactive.");
+                    }
+
+                    StaffTypeDTO staffType = StaffTypes.GetByID(toSave.StaffTypeId);
+                    if(!staffType.IsActive)
+                    {
+                        throw new Exception("Staff type " + staffType.Name + " is inactive.");
+                    }                    
+
+                    UserDTO user = Users.GetByID(toSave.UserId);
+                    if (!user.IsActive)
+                    {
+                        throw new Exception("User " + user.Name + " is inactive.");
+                    }
+
+                    // User has match the staff type role
+                    if (staffType.IsSupervisor && !user.IsSupervisor)
+                    {
+                        throw new EndUserException("User must be a supervisor to be of Type " + staffType.Name);
+                    }
+
+                    // Check for duplicate entries for this staff type (if they are not allowed)
+                    if (!staffType.AllowMultiple)
+                    {
+                        var existingStaffOfThisType = currentTaskStaff
+                           .Where(x => x.StaffTypeId == toSave.StaffTypeId);
+
+                        if (existingStaffOfThisType.Any())
+                        {
+                            throw new EndUserException("Staff type of " + staffType.Name + " does not allow multiple members.");
+                        }
+                    }
+
+                    if (entity == null)
                     {
                         if(toSave.StaffId == Guid.Empty)
                         {
@@ -94,25 +144,23 @@ namespace TaskList.Business.Helpers
                         }
 
                         entity.CreatedDate = DateTime.Now;
-                        entity.CreatedBy = tempEmail;
+                        entity.CreatedBy = currentUserEmail;
                         db.Staff.Add(entity);
-                    }
+                    }                   
 
                     entity.StaffTypeId = toSave.StaffTypeId;
                     entity.TaskId = toSave.TaskId;
                     entity.UserId = toSave.UserId;
                     entity.IsActive = toSave.IsActive;
                     entity.UpdatedDate = DateTime.Now;
-                    entity.UpdatedBy = tempEmail;
+                    entity.UpdatedBy = currentUserEmail;
                     db.SaveChanges();
 
                     return entity.StaffId;
                 }
                 catch(Exception ex)
                 {
-                    // ex.Publish();
-                    // return null;
-                    throw new Exception("Exception thrown in Staffs.Save");
+                    throw new Exception(ex.Message);
                 }
             }
         }
@@ -156,9 +204,32 @@ namespace TaskList.Business.Helpers
                 }
                 catch (Exception ex)
                 {
-                    // ex.Publish();
-                    throw new Exception("Exception thrown in Staffs.Delete");
+                    throw new Exception(ex.Message);
                 }
+            }
+        }
+
+        public static List<TaskStaffDTO> GetAllByTaskId(Guid taskId)
+        {
+            using (var db = new DB())
+            {
+                IQueryable<Staff> query = db.Staff
+                    .Where(x => x.TaskId == taskId);
+               
+                var dtos = query
+                    .Select(x => new TaskStaffDTO()
+                    {
+                        StaffId = x.StaffId,
+                        StaffTypeId = x.StaffTypeId,
+                        TaskId = x.TaskId,
+                        UserId = x.UserId,
+                        StaffTypeName = x.StaffType.Name,
+                        Name = x.User.LastName + ", " + x.User.FirstName,
+                        IsActive = x.IsActive,
+                    });
+
+                return dtos
+                    .ToList();
             }
         }
     }

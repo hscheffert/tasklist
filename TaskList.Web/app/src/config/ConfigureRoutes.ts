@@ -116,6 +116,7 @@ export default class Routes {
     public static LOGGED_OUT() { return new RouteUrl("/logged-out"); }
 
     public static TASK_EDIT(id: string) { return new RouteUrl("/tasks/edit/:id", { id }); }
+    public static STAFF_EDIT(id: string, taskId: string) { return new RouteUrl("/tasks/edit/:taskId/staff/edit/:id", { id, taskId }); }
 
     public static AREA_BASE() { return new RouteUrl("/areas"); }
     public static AREA_EDIT(id: string) { return new RouteUrl("/areas/edit/:id", { id }); }

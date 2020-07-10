@@ -26,6 +26,14 @@ namespace TaskList.Web.Controllers
             return Users.GetAll();
         }
 
+        // GET: api/users/getAllActive
+        [HttpGet]
+        [Route("getAllActive")]
+        public IEnumerable<UserDTO> GetAllActive()
+        {
+            return Users.GetAll(true);
+        }
+
         // GET api/users/5
         [HttpGet]
         [Route("{id:guid}")]
@@ -39,7 +47,9 @@ namespace TaskList.Web.Controllers
         [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] UserDTO dto)
         {
-            return Users.Save(dto);            
+            var email = _httpContextAccessor.HttpContext.User.GetCurrentUserEmail();
+
+            return Users.Save(dto, email);            
         }
 
         // PUT api/users/toggle/5

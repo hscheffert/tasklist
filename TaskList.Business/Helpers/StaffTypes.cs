@@ -37,7 +37,14 @@ namespace TaskList.Business.Helpers
         {
             using (var db = new DB())
             {
-                var dtos = db.StaffType
+                IQueryable<StaffType> query = db.StaffType;
+
+                if (activeOnly)
+                {
+                    query = query.Where(x => x.IsActive);
+
+                }
+                var dtos = query
                     .Select(x => new StaffTypeDTO()
                     {
                         StaffTypeId = x.StaffTypeId,
@@ -52,22 +59,14 @@ namespace TaskList.Business.Helpers
                         UpdatedDate = x.UpdatedDate
                     });
 
-                if (activeOnly)
-                {
-                    dtos = dtos.Where(x => x.IsActive);
-                }
-
                 return dtos
                     .OrderBy(x => x.DisplayOrder)
                     .ToList();
             }
         }
 
-        public static Guid? Save(StaffTypeDTO toSave)
+        public static Guid? Save(StaffTypeDTO toSave, string currentUserEmail)
         {
-            // TODO: Should be current user
-            var tempEmail = "hscheffert@qci.com";
-
             using (var db = new DB())
             {
                 try
@@ -90,7 +89,7 @@ namespace TaskList.Business.Helpers
                         }
 
                         entity.CreatedDate = DateTime.Now;
-                        entity.CreatedBy = tempEmail;
+                        entity.CreatedBy = currentUserEmail;
                         db.StaffType.Add(entity);
                     }
 
@@ -100,7 +99,7 @@ namespace TaskList.Business.Helpers
                     entity.DisplayOrder = toSave.DisplayOrder;
                     entity.IsActive = toSave.IsActive;
                     entity.UpdatedDate = DateTime.Now;
-                    entity.UpdatedBy = tempEmail;
+                    entity.UpdatedBy = currentUserEmail;
                     db.SaveChanges();
 
                     return entity.StaffTypeId;

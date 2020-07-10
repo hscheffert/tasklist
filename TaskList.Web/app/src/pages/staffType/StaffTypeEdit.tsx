@@ -120,9 +120,7 @@ class StaffTypeEdit extends React.Component<RouteComponentProps<RouteParams>, St
         console.log(values, this.state);
         const dto = StaffTypeDTO.create({
             staffTypeId: this.state.id !== '0' ? this.state.id : undefined,
-            name: values.name,
-            isActive: values.isActive,
-            displayOrder: values.displayOrder
+            ...values,
         });
 
         this.saveStaffType(dto);

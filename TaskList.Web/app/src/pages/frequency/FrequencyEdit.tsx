@@ -105,9 +105,7 @@ class FrequencyEdit extends React.Component<RouteComponentProps<RouteParams>, Fr
 
         const dto = FrequencyDTO.create({
             frequencyId: this.state.id !== '0' ? this.state.id : undefined,
-            name: values.name,
-            isActive: values.isActive,
-            displayOrder: values.displayOrder
+            ...values,
         });
        
         this.saveFrequency(dto);

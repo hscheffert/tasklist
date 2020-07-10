@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskList.Business.Helpers;
 using TaskList.Core.DTOs;
@@ -11,6 +12,13 @@ namespace TaskList.Web.Controllers
     [ApiController]
     public class SubAreaApiController : ControllerBase
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public SubAreaApiController(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         // GET: api/subAreas
         [HttpGet]
         public IEnumerable<SubAreaDTO> GetAll()
@@ -39,7 +47,9 @@ namespace TaskList.Web.Controllers
         [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] SubAreaDTO dto)
         {
-            return SubAreas.Save(dto);
+            var email = _httpContextAccessor.HttpContext.User.GetCurrentUserEmail();
+
+            return SubAreas.Save(dto, email);
         }
 
         // PUT api/subAreas/toggle/5

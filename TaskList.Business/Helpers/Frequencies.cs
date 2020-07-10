@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaskList.Core.DTOs;
@@ -7,7 +8,7 @@ using TaskList.Data.Model;
 namespace TaskList.Business.Helpers
 {
     public static class Frequencies
-    {
+    {        
         public static FrequencyDTO GetByID(Guid id)
         {
             using (var db = new DB())
@@ -35,7 +36,14 @@ namespace TaskList.Business.Helpers
         {
             using (var db = new DB())
             {
-                var dtos = db.Frequency
+                IQueryable<Frequency> query = db.Frequency;
+
+                if(activeOnly)
+                {
+                    query = query.Where(x => x.IsActive);
+                }
+
+                var dtos = query
                     .Select(x => new FrequencyDTO()
                     {
                         FrequencyId = x.FrequencyId,
@@ -47,23 +55,15 @@ namespace TaskList.Business.Helpers
                         UpdatedBy = x.UpdatedBy,
                         UpdatedDate = x.UpdatedDate
                     });
-
-                if (activeOnly)
-                {
-                    dtos = dtos.Where(x => x.IsActive);
-                }
-
+               
                 return dtos
                     .OrderBy(x => x.DisplayOrder)
                     .ToList();
             }
         }
 
-        public static Guid? Save(FrequencyDTO toSave)
+        public static Guid? Save(FrequencyDTO toSave, string currentUserEmail)
         {
-            // TODO: Should be current user
-            var tempEmail = "hscheffert@qci.com";
-
             using (var db = new DB())
             {
                 try
@@ -86,7 +86,8 @@ namespace TaskList.Business.Helpers
                         }
 
                         entity.CreatedDate = DateTime.Now;
-                        entity.CreatedBy = tempEmail;
+                        entity.CreatedBy = currentUserEmail;
+                        var email = currentUserEmail;
                         db.Frequency.Add(entity);
                     }
 
@@ -94,7 +95,7 @@ namespace TaskList.Business.Helpers
                     entity.DisplayOrder = toSave.DisplayOrder;
                     entity.IsActive = toSave.IsActive;
                     entity.UpdatedDate = DateTime.Now;
-                    entity.UpdatedBy = tempEmail;
+                    entity.UpdatedBy = currentUserEmail;
                     db.SaveChanges();
 
                     return entity.FrequencyId;

@@ -123,9 +123,7 @@ class AreaEdit extends React.Component<RouteComponentProps<RouteParams>, AreaEdi
 
         const dto = AreaDTO.create({
             areaId: this.state.id !== '0' ? this.state.id : undefined,
-            name: values.name,
-            isActive: values.isActive,
-            displayOrder: values.displayOrder
+            ...values,
         });
 
         this.saveArea(dto);

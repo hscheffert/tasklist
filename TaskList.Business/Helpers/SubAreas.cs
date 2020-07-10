@@ -19,6 +19,7 @@ namespace TaskList.Business.Helpers
                         SubAreaId = x.SubAreaId,
                         AreaId = x.AreaId,
                         Name = x.Name,
+                        AreaName = x.Area.Name,
                         DisplayOrder = x.DisplayOrder,
                         IsActive = x.IsActive,
                         CreatedBy = x.CreatedBy,
@@ -36,12 +37,20 @@ namespace TaskList.Business.Helpers
         {
             using (var db = new DB())
             {
-                var dtos = db.SubArea
+                IQueryable<SubArea> query = db.SubArea;
+
+                if (activeOnly)
+                {
+                    query = query.Where(x => x.IsActive);
+                }
+
+                var dtos = query
                     .Select(x => new SubAreaDTO()
                     {
                         SubAreaId = x.SubAreaId,
                         AreaId = x.AreaId,
                         Name = x.Name,
+                        AreaName = x.Area.Name,
                         DisplayOrder = x.DisplayOrder,
                         IsActive = x.IsActive,
                         CreatedBy = x.CreatedBy,
@@ -49,11 +58,6 @@ namespace TaskList.Business.Helpers
                         UpdatedBy = x.UpdatedBy,
                         UpdatedDate = x.UpdatedDate,
                     });
-
-                if (activeOnly)
-                {
-                    dtos = dtos.Where(x => x.IsActive);
-                }
 
                 return dtos
                     .OrderBy(x => x.DisplayOrder)
@@ -72,6 +76,7 @@ namespace TaskList.Business.Helpers
                         SubAreaId = x.SubAreaId,
                         AreaId = x.AreaId,
                         Name = x.Name,
+                        AreaName = x.Area.Name,
                         DisplayOrder = x.DisplayOrder,
                         IsActive = x.IsActive,
                         CreatedBy = x.CreatedBy,
@@ -86,11 +91,8 @@ namespace TaskList.Business.Helpers
             }
         }
 
-        public static Guid? Save(SubAreaDTO toSave)
+        public static Guid? Save(SubAreaDTO toSave, string currentUserEmail)
         {
-            // TODO: Should be current user
-            var tempEmail = "hscheffert@qci.com";
-
             using (var db = new DB())
             {
                 try
@@ -113,7 +115,7 @@ namespace TaskList.Business.Helpers
                         }
 
                         entity.CreatedDate = DateTime.Now;
-                        entity.CreatedBy = tempEmail;
+                        entity.CreatedBy = currentUserEmail;
                         db.SubArea.Add(entity);
                     }
 
@@ -122,7 +124,7 @@ namespace TaskList.Business.Helpers
                     entity.DisplayOrder = toSave.DisplayOrder;
                     entity.IsActive = toSave.IsActive;
                     entity.UpdatedDate = DateTime.Now;
-                    entity.UpdatedBy = tempEmail;
+                    entity.UpdatedBy = currentUserEmail;
                     db.SaveChanges();
 
                     return entity.SubAreaId;

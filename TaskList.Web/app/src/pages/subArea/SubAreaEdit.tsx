@@ -69,7 +69,7 @@ class SubAreaEdit extends React.Component<RouteComponentProps<RouteParams>, SubA
         return (
             <Space direction="vertical" style={{ width: '100%' }} size={'small'}>
                 <BreadcrumbsItem name="area_edit" to={Routes.AREA_EDIT(this.state.areaId).ToRoute()}>
-                    Edit Area
+                    {this.state.subArea.areaName}
                 </BreadcrumbsItem>
                 <BreadcrumbsItem name="subArea_edit">
                     {this.state.id !== '0' ? 'Edit Sub Area' : 'New Sub Area'}
@@ -113,9 +113,7 @@ class SubAreaEdit extends React.Component<RouteComponentProps<RouteParams>, SubA
         const dto = SubAreaDTO.create({
             subAreaId: this.state.id !== '0' ? this.state.id : undefined,
             areaId: this.state.areaId,
-            name: values.name,
-            isActive: values.isActive,
-            displayOrder: values.displayOrder
+            ...values,
         });
        
         this.saveSubArea(dto);

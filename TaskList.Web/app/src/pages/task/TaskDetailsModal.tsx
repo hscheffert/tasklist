@@ -1,16 +1,19 @@
 import React from 'react';
-import { Row, Col, notification, Spin, Typography, Divider } from 'antd';
+import { Row, Col, notification, Spin, Typography, Divider, Button } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import { formatDateTime } from '../../utils/DateTimeHelper';
 import TaskApiController from 'api/TaskApiController';
 import TaskDetailsDTO from 'models/generated/TaskDetailsDTO';
 import TaskStaffDTO from 'models/generated/TaskStaffDTO';
+import Routes from 'config/ConfigureRoutes';
+import HistoryUtil from '../../utils/HistoryUtil';
 
 interface TaskDetailsModalProps {
     id: string;
     visible: boolean;
     closeModal: () => void;
     staffTypes: any[];
+    isAdmin: boolean;
 }
 
 interface TaskDetailsModalState {
@@ -37,12 +40,12 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
         }
     }
 
-    renderRow = (label: string, value: any) => {
+    renderRow = (label: string, value: any, key?: string) => {
         const labelProps = { span: 8 };
         const valueProps = { span: 16 };
 
         return (
-            <Row key={label} style={{ marginTop: 6 }}>
+            <Row key={key || label} style={{ marginTop: 6 }}>
                 <Col {...labelProps}>
                     <b>{label}</b>
                 </Col>
@@ -54,18 +57,30 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
     }
 
     renderTaskStaff = () => {
-        if(!this.props.staffTypes.length) return null;
+        if (!this.props.staffTypes.length) return null;
 
-        const taskStaffRows = this.props.staffTypes.map(staffType => {
+        const taskStaffRows = this.props.staffTypes.flatMap(staffType => {
             const taskStaffOfThisStaffType = this.state.task?.taskStaff?.filter((ts: TaskStaffDTO) => ts.staffTypeId == staffType.staffTypeId);
 
-            return {
-                staffTypeName: staffType.name,
-                listOfNames: taskStaffOfThisStaffType?.map((ts: TaskStaffDTO) => ts.name).join(', ')
-            }            
+            // If the task doesn't have any staff of this type, make sure we at least show it as empty
+            if (!taskStaffOfThisStaffType.length) {
+                return [{
+                    key: staffType.staffTypeId,
+                    staffTypeName: staffType.name,
+                    name: 'None'
+                }];
+            }
+
+            return [...taskStaffOfThisStaffType.map((ts: TaskStaffDTO) => {
+                return {
+                    key: ts.staffId,
+                    staffTypeName: staffType.name,
+                    name: ts.name
+                };
+            })];
         });
 
-        return taskStaffRows.map((ts: any) => this.renderRow(ts.staffTypeName, ts.listOfNames));
+        return taskStaffRows.map((ts: any) => this.renderRow(ts.staffTypeName, ts.name, ts.key));
     }
 
     render() {
@@ -73,8 +88,13 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
             return null;
         }
 
-        const { closeModal, visible } = this.props;
+        const { closeModal, visible, isAdmin } = this.props;
         const { task } = this.state;
+        const editButton = (
+            <Button onClick={() => HistoryUtil.push(Routes.TASK_EDIT(this.state.task.taskId as string).ToRoute())}>
+                Edit
+            </Button>
+        );
 
         return (
             <Modal
@@ -82,7 +102,13 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
                 visible={visible}
                 onOk={closeModal}
                 cancelButtonProps={{ style: { display: 'none' } }} // Hide cancel button
-                onCancel={closeModal}>
+                onCancel={closeModal}
+                footer={[
+                    isAdmin && editButton,
+                    <Button type="primary" onClick={closeModal}>
+                        OK
+                    </Button>,
+                ]}>
                 <Spin spinning={this.state.loading}>
                     {this.renderRow('Name', task.name)}
                     {this.renderRow('Area', task.areaName)}
@@ -93,12 +119,12 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
                     {this.renderRow('Procedure File Name', task.procedureFileName || 'None')}
                     {this.renderRow('Is Active', task.isActive ? 'Yes' : 'No')}
 
-                    <Divider/>
+                    <Divider />
                     <Typography.Title level={4}>Staff</Typography.Title>
                     {this.renderTaskStaff()}
 
                     {task.updatedDate && task.updatedBy && <div style={{ marginTop: 20 }}>
-                         <i>{`Last Updated on ${formatDateTime(task.updatedDate)} by ${task.updatedBy}`}</i>
+                        <i>{`Last Updated on ${formatDateTime(task.updatedDate)} by ${task.updatedBy}`}</i>
                     </div>}
                 </Spin>
 

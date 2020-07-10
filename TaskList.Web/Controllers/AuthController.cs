@@ -29,21 +29,21 @@ namespace TaskList.Web.Controllers
             if (User.Identity.IsAuthenticated) // Is User authenticated by Azure AD
             {
                 var currentUser = _httpContextAccessor.HttpContext.User;
-                var email = currentUser.FindFirst(ClaimTypes.Email);
-                var user = Users.GetByEmail(email?.Value);
+                var email = currentUser.GetCurrentUserEmail();
+                var user = Users.GetByEmail(email);
 
-                if (user == null && !String.IsNullOrEmpty(email.Value))
+                if (user == null && !String.IsNullOrEmpty(email))
                 {
                     // Create a user for them.
                     Users.Save(new UserDTO()
                     {
-                        Email = email.Value,
-                        FirstName = currentUser.FindFirst(ClaimTypes.GivenName).Value,
-                        LastName = currentUser.FindFirst(ClaimTypes.Surname).Value,
+                        Email = email,
+                        FirstName = currentUser.FindFirstValue(ClaimTypes.GivenName),
+                        LastName = currentUser.FindFirstValue(ClaimTypes.Surname),
                         IsActive = true,
                         IsSupervisor = false,
                         SupervisorId = null,
-                    });
+                    }, email);
                 }
             }
             else
@@ -62,8 +62,8 @@ namespace TaskList.Web.Controllers
         public UserDTO GetMe()
         {
             var currentUser = _httpContextAccessor.HttpContext.User;
-            var email = currentUser.FindFirst(ClaimTypes.Email);
-            var user = Users.GetByEmail(email?.Value);
+            var email = currentUser.GetCurrentUserEmail();
+            var user = Users.GetByEmail(email);
 
             // Note: Would be good to add some check here for user.IsSupervisor compared to the AdminRole claim
             // to ensure they are still in sync...but for now, ignoring that scenario and assuming they log in/out often.

@@ -8,6 +8,8 @@ import {
     Input,
     Checkbox,
     Select,
+    Divider,
+    Typography,
 } from 'antd';
 import HistoryUtil from '../../utils/HistoryUtil';
 import { FormInstance } from 'antd/lib/form';
@@ -27,6 +29,9 @@ import StaffTypeDTO from 'models/generated/StaffTypeDTO';
 import Routes from 'config/ConfigureRoutes';
 import { UserState } from 'redux/UserReducer';
 import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
+import TaskStaffTable from '../staff/StaffTable';
+import ReduxStoreModel from 'redux/ReduxModel';
+import { connect } from 'react-redux';
 
 interface RouteParams {
     id: string;
@@ -43,15 +48,13 @@ interface TaskEditState {
     areas: AreaDTO[];
     subareas: SubAreaDTO[];
     frequencies: FrequencyDTO[];
-    users: UserDTO[];
-    staffTypes: StaffTypeDTO[];
 }
 
 class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
     private formRef: FormInstance | null | undefined;
     constructor(props: TaskEditProps) {
         super(props);
-        const id = props.match == null ? '0' : props.match.params.id || '0'; 
+        const id = props.match == null ? '0' : props.match.params.id || '0';
 
         this.state = {
             loading: false,
@@ -60,13 +63,27 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
             areas: [],
             subareas: [],
             frequencies: [],
-            users: [],
-            staffTypes: [],
         };
     }
 
     componentDidMount() {
         this.fetchData();
+    }
+
+    renderStaffStuff = () => {
+        if (!this.state.task.taskId) return;
+
+        return (
+            <div style={{ paddingBottom: '60px' }}>
+                <Divider />
+                <Typography.Title level={4}>Staff</Typography.Title>
+                <TaskStaffTable
+                    isAdmin={this.props.User.isAdmin}
+                    taskId={this.state.id}
+                    task={this.state.task}
+                />
+            </div>
+        );
     }
 
     renderForm() {
@@ -141,8 +158,6 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
                     </Select>
                 </Form.Item>
 
-                {this.state.staffTypes.map(this.renderStaffTypeSelect)}
-
                 <Form.Item
                     label="Notes"
                     name="notes">
@@ -176,9 +191,10 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
                 <BreadcrumbsItem name="task_edit">
                     {this.state.id !== '0' ? 'Edit Task' : 'New Task'}
                 </BreadcrumbsItem>
-                
+
                 <Spin spinning={this.state.loading}>
                     {this.renderForm()}
+                    {this.state.id !== '0' && this.renderStaffStuff()}
                 </Spin>
             </Space>
         );
@@ -195,16 +211,14 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
             promises.push(Promise.resolve(null));
         }
 
-        promises.push(AreaApiController.getAll());
-        promises.push(FrequencyApiController.getAll());
-        promises.push(UserApiController.getAll());
-        promises.push(StaffTypeApiController.getAll());
+        promises.push(AreaApiController.getAllActive());
+        promises.push(FrequencyApiController.getAllActive());
 
         let subareas = [];
         let task = this.state.task;
 
         try {
-            const [taskResponse, areasResponse, frequenciesResponse, usersResponse, staffTypesResponse] = await Promise.all(promises);
+            const [taskResponse, areasResponse, frequenciesResponse] = await Promise.all(promises);
 
             if (taskResponse) {
                 this.formRef?.setFieldsValue({
@@ -215,7 +229,7 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
                 subareas = areasResponse.data.find((x: any) => x.areaId == taskResponse.data.areaId).subAreas;
 
                 // Set the staff dropdowns based on task staff
-                this.setStaffInForm(taskResponse.data.taskStaff);
+                // this.setStaffInForm(taskResponse.data.taskStaff);
                 task = taskResponse.data;
             }
 
@@ -223,9 +237,7 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
                 loading: false,
                 areas: areasResponse.data,
                 frequencies: frequenciesResponse.data,
-                users: usersResponse.data,
                 subareas,
-                staffTypes: staffTypesResponse.data,
                 task: task
             });
 
@@ -240,28 +252,9 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
     }
 
     private onFinish = (values: any) => {
-        console.log('form values:', values);
-        const people = [values.primaryStaffUserId, values.backup1UserId, values.backup2UserId, values.backup3UserId, values.alternativeSupervisorUserId];
-        const duplicateUsers = this.findDuplicates(people);
-
-        if (duplicateUsers.length) {
-            return notification.error({
-                message: 'Please assign distinct staff members'
-            });
-        }
-
         const dto = TaskDetailsDTO.create({
             taskId: this.state.id !== '0' ? this.state.id : undefined,
-            name: values.name,
-            areaId: values.areaId,
-            subAreaId: values.subAreaId,
-            frequencyId: values.frequencyId,
-            notes: values.notes,
-            isInPolicyTech: values.isInPolicyTech,
-            procedureFileName: values.procedureFileName,
-            isActive: values.isActive,
-            displayOrder: values.displayOrder,
-            taskStaff: this.createTaskStaffArray(),
+            ...values,
         });
 
         console.log('create/update task:', dto);
@@ -297,7 +290,11 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
             const result = await TaskApiController.post(dto);
 
             this.setState({ loading: false });
-            HistoryUtil.push(Routes.GET.BASE_ROUTE);
+            if(this.state.id === '0') {
+                HistoryUtil.push(Routes.TASK_EDIT(result.data).ToRoute());
+            } else {
+                HistoryUtil.push(Routes.GET.BASE_ROUTE);
+            }
         } catch (err) {
             this.setState({ loading: false });
             console.error(err);
@@ -322,63 +319,12 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
             subareas: this.state.areas.find((x: any) => x.areaId === changedValues.areaId).subAreas,
         });
     }
-
-    private renderStaffTypeSelect = (staffType: any) => {
-        const users = staffType.name === StaffTypeNames.AlternateSupervisor ? this.state.users.filter((user: any) => user.isSupervisor) : this.state.users;
-        const isRequired = staffType.name === StaffTypeNames.Primary;
-
-        return (
-            <Form.Item
-                key={staffType.staffTypeId}
-                label={staffType.name}
-                name={this.staffTypeFormNameMapper(staffType.name)}
-                rules={isRequired ? [FormHelper.FormConstants.FormRequiredRule] : []}>
-                <Select allowClear={true}>
-                    {users.map(FormHelper.renderUserSelectOption)}
-                </Select>
-            </Form.Item>
-        );
-    }
-
-    private staffTypeFormNameMapper = (staffTypeName: string) => {
-        const mapper = {
-            [StaffTypeNames.Primary]: 'primaryStaffUserId',
-            [StaffTypeNames.Backup1]: 'backup1UserId',
-            [StaffTypeNames.Backup2]: 'backup2UserId',
-            [StaffTypeNames.Backup3]: 'backup3UserId',
-            [StaffTypeNames.AlternateSupervisor]: 'alternativeSupervisorUserId',
-        };
-
-        return mapper[staffTypeName];
-    }
-
-    private setStaffInForm = (taskStaff: any[]) => {
-        const formData = taskStaff.reduce((acc, cur) => {
-            return {
-                ...acc,
-                [this.staffTypeFormNameMapper(cur.staffTypeName)]: cur.userId
-            }
-        }, {});
-
-        this.formRef?.setFieldsValue(formData);
-    }
-
-    private createTaskStaffArray = () => {
-        const taskStaff = this.state.staffTypes.map(staffType => ({
-            staffId: this.state.task.taskStaff.find((x: any) => x.staffTypeId == staffType.staffTypeId)?.staffId || null,
-            staffTypeId: staffType.staffTypeId,
-            staffTypeName: staffType.name,
-            userId: this.formRef?.getFieldValue(this.staffTypeFormNameMapper(staffType.name)),
-            taskId: this.state.id !== '0' ? this.state.id : null,
-        }));
-
-        console.log('taskStaff for task:', taskStaff);
-        return taskStaff;
-    }
-
-    private findDuplicates = (arr: string[]) => {
-        return arr.filter((item: string, index: number) => item != null && arr.indexOf(item) != index);
-    }
 }
 
-export default TaskEdit;
+function mapStateToProps(state: ReduxStoreModel) {
+    return {
+        User: state.User,
+    };
+}
+
+export default connect(mapStateToProps)(TaskEdit);

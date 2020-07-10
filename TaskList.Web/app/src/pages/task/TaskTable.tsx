@@ -33,7 +33,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
   private dataTable: DataTable<TaskDTO>;
   private customTableColumns: DataTableColumnProps<any>[] = [
     DataTableUtil.Columns.DisplayOrder(true),
-    DataTable.StandardColumns.Text('Name', 'name', { columnProps: { defaultSortOrder: 'descend'}}),
+    DataTable.StandardColumns.Text('Name', 'name', { columnProps: { defaultSortOrder: 'descend' } }),
     DataTable.StandardColumns.Text('Area', 'areaName'),
     DataTable.StandardColumns.Text('Sub Area', 'subAreaName'),
     DataTable.StandardColumns.Text('Primary Staff', 'primaryStaffName'),
@@ -64,7 +64,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
 
           if (this.props.User.isAdmin) {
             return (
-              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+              <Space size={20}>
                 <EditOutlined onClick={() => this.editTask(record.taskId)} />
                 {moreIcon}
               </Space>
@@ -80,6 +80,12 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
     this.fetchUsers();
   }
 
+  onRow = (record: TaskDTO, rowIndex: any) => {
+    return {
+      onClick: () => this.viewDetails(record.taskId)
+    }
+  }
+
   renderTable = () => {
     const addButton = DataTable.TableButtons.Add("Add Task", Routes.TASK_EDIT('0').ToRoute());
 
@@ -91,6 +97,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
           rowKey: 'rowKey',
           loading: this.state.loading,
           sortDirections: ['ascend', 'descend'],
+          onRow: this.onRow
         }}
         columns={this.customTableColumns}
         data={this.state.data}
@@ -105,7 +112,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
       <Select
         placeholder="Select Person"
         style={{ width: '200px' }}
-        allowClear={true} 
+        allowClear={true}
         value={this.state.selectedUserId}
         onChange={this.handleSelectUser}>
         {this.state.users.map(renderUserSelectOption)}
@@ -125,13 +132,14 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
           visible={this.state.modalVisible}
           closeModal={this.closeModal}
           staffTypes={this.state.staffTypes}
+          isAdmin={this.props.User.isAdmin}
         />
       </Space>
     );
   }
 
   private fetchData = async () => {
-    this.setState({ loading: true });   
+    this.setState({ loading: true });
 
     try {
       const result = await TaskApiController.getAllUserTasks(this.state.selectedUserId || '');
@@ -159,7 +167,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
 
     this.setState({ loading: true });
     try {
-      const result = await StaffTypeApiController.getAll();
+      const result = await StaffTypeApiController.getAllActive();
 
       this.setState({
         loading: false,
@@ -221,8 +229,8 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
   private handleSelectUser = (value: string) => {
     this.setState({
       selectedUserId: value
-    },     
-    () => this.fetchData());
+    },
+      () => this.fetchData());
   }
 
   private editTask = (taskId: string | null) => {

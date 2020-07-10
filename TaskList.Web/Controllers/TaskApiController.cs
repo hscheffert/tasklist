@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskList.Business.Helpers;
 using TaskList.Core.DTOs;
@@ -12,6 +13,13 @@ namespace TaskList.Web.Controllers
     [ApiController]
     public class TaskApiController : ControllerBase
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public TaskApiController(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         // GET: api/tasks
         [HttpGet]
         public IEnumerable<TaskDTO> GetAll()
@@ -26,7 +34,8 @@ namespace TaskList.Web.Controllers
         {
             if (id == null || id == Guid.Empty)
             {
-                return Tasks.GetAll();
+                //return Tasks.GetAll();
+                return Tasks.GetAllTasks();
             }
 
             return Tasks.GetAllUsersTasks((Guid)id);
@@ -53,7 +62,9 @@ namespace TaskList.Web.Controllers
         [Authorize(Policy = "Admin")]
         public Guid? Post([FromBody] TaskDetailsDTO dto)
         {
-            return Tasks.Save(dto);
+            var email = _httpContextAccessor.HttpContext.User.GetCurrentUserEmail();
+
+            return Tasks.Save(dto, email);
         }
 
         // PUT api/tasks/toggle/5

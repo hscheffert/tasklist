@@ -3,7 +3,6 @@
 // @ts-ignore
 import * as moment from 'moment';
 import InterfaceConstructor from '../InterfaceConstructor';
-import StaffMemberDTO from './StaffMemberDTO';
 
 interface TaskDTO { 
     taskId: string | null;
@@ -24,7 +23,6 @@ interface TaskDTO {
     updatedBy: string | null;
     updatedDate: moment.Moment | string | null;
     primaryStaffName: string | null;
-    assignedStaffMembers: StaffMemberDTO[] | null;
     rowKey: string | null;
 }
 const TaskDTO: InterfaceConstructor<TaskDTO> = {
@@ -49,7 +47,6 @@ const TaskDTO: InterfaceConstructor<TaskDTO> = {
             updatedBy: null,
             updatedDate: null,
             primaryStaffName: null,
-            assignedStaffMembers: [],
             rowKey: "00000000-0000-0000-0000-000000000000",
         },
         initValues);

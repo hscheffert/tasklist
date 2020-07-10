@@ -9,6 +9,12 @@ class StaffTypeApiControllerInternal {
         let url = this.RouteGetAll();
         return HttpApi.RestRequest<any, StaffTypeDTO[]>(null, 'get', url, requestOptions);
     }
+    // get: api/staffTypes/getAllActive
+    public RouteGetAllActive = () => `api/staffTypes/getAllActive`;
+    public getAllActive(requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<StaffTypeDTO[]>> {
+        let url = this.RouteGetAllActive();
+        return HttpApi.RestRequest<any, StaffTypeDTO[]>(null, 'get', url, requestOptions);
+    }
     // get: api/staffTypes/${encodeURIComponent(id)}
     public RouteGet = (id: string) => `api/staffTypes/${encodeURIComponent(id)}`;
     public get(id: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<StaffTypeDTO>> {

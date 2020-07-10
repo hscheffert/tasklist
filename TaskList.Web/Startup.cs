@@ -56,6 +56,8 @@ namespace TaskList.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
+            app.UseExceptionHandler("/error");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -101,7 +103,6 @@ namespace TaskList.Web
         {
             services.AddAuthorization(options =>
             {
-                // options.AddPolicy("Admin", policy => policy.RequireClaim(AppSettings.Default.AdminClaim));
                 options.AddPolicy(
                     "Admin",
                     policy => policy.AddRequirements(new HasClaimRequirement(AppSettings.Default.AdminRoleClaim)));
@@ -137,8 +138,8 @@ namespace TaskList.Web
                     // AKA when the user logs in with Azure AD
                     OnTokenValidated = async (ctx) =>
                     {
-                        var email = ctx.Principal.FindFirst(ClaimTypes.Email);
-                        var user = Users.GetByEmail(email?.Value);
+                        var email = ctx.Principal.FindFirstValue(ClaimTypes.Email);
+                        var user = Users.GetByEmail(email);
 
                         // Could also do ClaimTypes.Role and set "Admin" or "User"
                         // Add the AdminRole claim if they are a supervisor

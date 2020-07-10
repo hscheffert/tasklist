@@ -1,23 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
 using System.Security.Claims;
-using System.Security.Principal;
 
 namespace TaskList.Web
 {
     public static class IdentityExtensions
     {
-        public static void RemoveClaim(this IPrincipal currentPrincipal, string key)
+        public static string GetCurrentUserEmail(this ClaimsPrincipal principal)
         {
-            var identity = currentPrincipal.Identity as ClaimsIdentity;
+            if (principal == null)
+                throw new ArgumentNullException(nameof(principal));
 
-            if (identity == null)
-                return;
-
-            // Check for existing claim and remove it
-            var existingClaim = identity.FindFirst(key);
-
-            if (existingClaim != null)
-                identity.RemoveClaim(existingClaim);
+            return principal.FindFirstValue(ClaimTypes.Email);
         }
     }
 }

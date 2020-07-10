@@ -20,6 +20,7 @@ namespace TaskList.Business.Helpers
                         UserId = x.UserId,
                         FirstName = x.FirstName,
                         LastName = x.LastName,
+                        Name = x.LastName + ", " + x.FirstName,
                         Email = x.Email,
                         IsSupervisor = x.IsSupervisor,
                         SupervisorId = x.SupervisorId,
@@ -35,7 +36,19 @@ namespace TaskList.Business.Helpers
         {
             using (var db = new DB())
             {
-                var dtos = db.User
+                IQueryable<User> query = db.User;
+
+                if (activeOnly)
+                {
+                    query = query.Where(x => x.IsActive);
+                }
+
+                if (supervisorsOnly)
+                {
+                    query = query.Where(x => x.IsSupervisor);
+                }
+
+                var dtos = query
                     .Select(x => new UserDTO()
                     {
                         UserId = x.UserId,
@@ -47,17 +60,7 @@ namespace TaskList.Business.Helpers
                         IsActive = x.IsActive,
                         SupervisorName = Users.GetSupervisorName(x.SupervisorId)
                     });
-
-                if (activeOnly)
-                {
-                    dtos = dtos.Where(x => x.IsActive);
-                }
-
-                if(supervisorsOnly)
-                {
-                    dtos = dtos.Where(x => x.IsSupervisor);
-                }
-
+                
                 return dtos
                     .OrderBy(x => x.LastName)
                     .ThenBy(x => x.FirstName)
@@ -65,18 +68,15 @@ namespace TaskList.Business.Helpers
             }
         }
 
-        public static Guid? Save(UserDTO toSave)
+        public static Guid? Save(UserDTO toSave, string currentUserEmail)
         {
-            // TODO: Should be current user
-            var tempEmail = "hscheffert@qci.com";
-
             if(toSave.SupervisorId != null)
             {
                 var supervisor = Users.GetByID((Guid) toSave.SupervisorId);
 
                 if (supervisor == null || !supervisor.IsSupervisor)
                 {
-                    throw new EndUserException("Selected supervisor is not in fact a supervisor.");
+                    throw new EndUserException("Selected supervisor is not a supervisor.");
                 }
             }
 
@@ -102,7 +102,7 @@ namespace TaskList.Business.Helpers
                         }
 
                         entity.CreatedDate = DateTime.Now;
-                        entity.CreatedBy = tempEmail;
+                        entity.CreatedBy = currentUserEmail;
                         db.User.Add(entity);
                     }
 
@@ -113,14 +113,14 @@ namespace TaskList.Business.Helpers
                     entity.SupervisorId = toSave.SupervisorId;
                     entity.IsActive = toSave.IsActive;
                     entity.UpdatedDate = DateTime.Now;
-                    entity.UpdatedBy = tempEmail;
+                    entity.UpdatedBy = currentUserEmail;
                     db.SaveChanges();
 
                     return entity.UserId;
                 }
                 catch(Exception ex)
                 {
-                    throw new Exception("Exception thrown in Users.Save");
+                    throw new Exception(ex.Message);
                 }
             }
         }
@@ -140,7 +140,7 @@ namespace TaskList.Business.Helpers
                 }
                 catch(Exception ex)
                 {
-                    throw new Exception("Exception thrown in Users.Toggle");               
+                    throw new Exception(ex.Message);               
                 }                
             }
         }

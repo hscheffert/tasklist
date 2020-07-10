@@ -1,5 +1,5 @@
 import * as React from 'react';
-import SideNav from '../sideNav/SideNav';
+import SideNav from './components/SideNav';
 import { Layout } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 import SimpleHeader from './components/SimpleHeader';

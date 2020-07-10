@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Menu, Layout } from 'antd';
 import { NavLink } from 'react-router-dom';
-import HistoryUtil from '../utils/HistoryUtil';
+import HistoryUtil from 'utils/HistoryUtil';
 import Routes from 'config/ConfigureRoutes';
 import { UserState } from 'redux/UserReducer';
 import ReduxStoreModel from 'redux/ReduxModel';

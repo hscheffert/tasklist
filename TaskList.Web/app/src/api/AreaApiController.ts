@@ -9,6 +9,12 @@ class AreaApiControllerInternal {
         let url = this.RouteGetAll();
         return HttpApi.RestRequest<any, AreaDTO[]>(null, 'get', url, requestOptions);
     }
+    // get: api/areas/getAllActive
+    public RouteGetAllActive = () => `api/areas/getAllActive`;
+    public getAllActive(requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<AreaDTO[]>> {
+        let url = this.RouteGetAllActive();
+        return HttpApi.RestRequest<any, AreaDTO[]>(null, 'get', url, requestOptions);
+    }
     // get: api/areas/${encodeURIComponent(id)}
     public RouteGet = (id: string) => `api/areas/${encodeURIComponent(id)}`;
     public get(id: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<AreaDTO>> {

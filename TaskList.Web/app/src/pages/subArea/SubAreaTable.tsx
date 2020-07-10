@@ -56,6 +56,7 @@ class SubAreaTable extends React.Component<SubAreaTableProps, SubAreaTableState>
                     rowKey: 'subAreaId',
                     loading: this.state.loading,
                     sortDirections: ['ascend', 'descend'],
+                    pagination: false
                 }}
                 columns={this.customTableColumns}
                 data={this.state.subAreas}

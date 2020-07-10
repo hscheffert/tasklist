@@ -9,6 +9,12 @@ class UserApiControllerInternal {
         let url = this.RouteGetAll();
         return HttpApi.RestRequest<any, UserDTO[]>(null, 'get', url, requestOptions);
     }
+    // get: api/users/getAllActive
+    public RouteGetAllActive = () => `api/users/getAllActive`;
+    public getAllActive(requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<UserDTO[]>> {
+        let url = this.RouteGetAllActive();
+        return HttpApi.RestRequest<any, UserDTO[]>(null, 'get', url, requestOptions);
+    }
     // get: api/users/${encodeURIComponent(id)}
     public RouteGet = (id: string) => `api/users/${encodeURIComponent(id)}`;
     public get(id: string, requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<UserDTO>> {

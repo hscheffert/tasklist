@@ -15,6 +15,7 @@ import Area from 'pages/area/Area';
 import StaffType from 'pages/staffType/StaffType';
 import User from 'pages/user/User';
 import TaskEdit from 'pages/task/TaskEdit';
+import StaffEdit from 'pages/staff/StaffEdit';
 import Unauthorized from 'pages/Unauthorized';
 import LoggedOut from 'pages/LoggedOut';
 
@@ -27,6 +28,7 @@ const logoutLocation: string = Routes.GET.LOGOUT;
 const RouteLoader = <Switch>
     {/* Task is weird because this is our "base" route as well...so adding task edit here too */}
     <LayoutComponent exact path={Routes.GET.BASE_ROUTE} component={Task} layout={MainLayout} />
+    <LayoutComponent path={Routes.GET.STAFF_EDIT} component={StaffEdit} layout={MainLayout} adminOnly={true}/>
 
     <LayoutComponent path={Routes.GET.TASK_EDIT} component={TaskEdit} layout={MainLayout} adminOnly={true}/>
     <LayoutComponent path={Routes.GET.FREQUENCY_BASE} component={Frequency} layout={MainLayout} adminOnly={true}/>

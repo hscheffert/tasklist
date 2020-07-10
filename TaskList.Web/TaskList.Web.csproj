@@ -33,6 +33,9 @@
     <None Update="app\src\api\AuthController.ts">
       <CustomToolNamespace>Controllers\AuthController.cs</CustomToolNamespace>
     </None>
+    <None Update="app\src\api\ErrorController.ts">
+      <CustomToolNamespace>Controllers\ErrorController.cs</CustomToolNamespace>
+    </None>
     <None Update="app\src\api\FrequencyApiController.ts">
       <CustomToolNamespace>Controllers\FrequencyApiController.cs</CustomToolNamespace>
     </None>

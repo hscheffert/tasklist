@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using TaskList.Core.DTOs;
 using TaskList.Data.Model;
 
@@ -35,18 +35,18 @@ namespace TaskList.Business.Helpers
                                    SubAreas = a.SubArea
                                         .OrderBy(s => s.DisplayOrder)
                                         .Select(x => new SubAreaDTO()
-                                   {
-                                       SubAreaId = x.SubAreaId,
-                                       AreaId = x.AreaId,
-                                       Name = x.Name,
-                                       DisplayOrder = x.DisplayOrder,
-                                       IsActive = x.IsActive,
-                                       CreatedBy = x.CreatedBy,
-                                       CreatedDate = x.CreatedDate,
-                                       UpdatedBy = x.UpdatedBy,
-                                       UpdatedDate = x.UpdatedDate,
-                                   })
-                                }).FirstOrDefault();
+                                        {
+                                            SubAreaId = x.SubAreaId,
+                                            AreaId = x.AreaId,
+                                            Name = x.Name,
+                                            DisplayOrder = x.DisplayOrder,
+                                            IsActive = x.IsActive,
+                                            CreatedBy = x.CreatedBy,
+                                            CreatedDate = x.CreatedDate,
+                                            UpdatedBy = x.UpdatedBy,
+                                            UpdatedDate = x.UpdatedDate,
+                                        })
+                               }).FirstOrDefault();
 
                 return areaDTO;
             }
@@ -58,35 +58,51 @@ namespace TaskList.Business.Helpers
         /// <returns>
         /// List Area
         /// </returns>
-        public static List<AreaDTO> GetAll()
+        public static List<AreaDTO> GetAll(bool activeOnly = false)
         {
             using (var db = new DB())
             {
-                var areaDTOs = (from a in db.Area
-                               select new AreaDTO()
-                               {
-                                   AreaId = a.AreaId,
-                                   Name = a.Name,
-                                   DisplayOrder = a.DisplayOrder,
-                                   IsActive = a.IsActive,
-                                   CreatedBy = a.CreatedBy,
-                                   CreatedDate = a.CreatedDate,
-                                   UpdatedBy = a.UpdatedBy,
-                                   UpdatedDate = a.UpdatedDate,
-                                   SubAreas = a.SubArea
+                IQueryable<Area> query = db.Area;
+
+                if(activeOnly)
+                {
+                    query = query.Where(a => a.IsActive);
+                }
+
+                var areaDTOs = query
+                    .Select(a => new AreaDTO()
+                    {
+                        AreaId = a.AreaId,
+                        Name = a.Name,
+                        DisplayOrder = a.DisplayOrder,
+                        IsActive = a.IsActive,
+                        CreatedBy = a.CreatedBy,
+                        CreatedDate = a.CreatedDate,
+                        UpdatedBy = a.UpdatedBy,
+                        UpdatedDate = a.UpdatedDate,
+                        SubAreas = activeOnly ? a.SubArea
+                        .Where(s => s.IsActive)
                                         .OrderBy(s => s.DisplayOrder)
                                         .Select(s => new SubAreaDTO()
-                                   {
-                                       SubAreaId = s.SubAreaId,
-                                       AreaId = s.AreaId,
-                                       Name = s.Name,
-                                       IsActive = s.IsActive,
-                                   })
-                               })
-                               .OrderBy(x => x.DisplayOrder)
-                               .ToList();
+                                        {
+                                            SubAreaId = s.SubAreaId,
+                                            AreaId = s.AreaId,
+                                            Name = s.Name,
+                                            IsActive = s.IsActive,
+                                        }) : a.SubArea
+                                        .OrderBy(s => s.DisplayOrder)
+                                        .Select(s => new SubAreaDTO()
+                                        {
+                                            SubAreaId = s.SubAreaId,
+                                            AreaId = s.AreaId,
+                                            Name = s.Name,
+                                            IsActive = s.IsActive,
+                                        })
+                    });
 
-                return areaDTOs;
+                return areaDTOs
+                        .OrderBy(x => x.DisplayOrder)
+                        .ToList();
             }
         }
 
@@ -98,11 +114,8 @@ namespace TaskList.Business.Helpers
         /// <returns>
         /// Did the record save properly
         /// </returns>
-        public static Guid? Save(AreaDTO toSave)
+        public static Guid? Save(AreaDTO toSave, string currentUserEmail)
         {
-            // TODO: Should be current user
-            var tempEmail = "hscheffert@qci.com";
-
             using (var db = new DB())
             {
                 try
@@ -122,7 +135,7 @@ namespace TaskList.Business.Helpers
                         }
 
                         area.CreatedDate = DateTime.Now;
-                        area.CreatedBy = tempEmail;
+                        area.CreatedBy = currentUserEmail;
                         db.Area.Add(area);
                     }
 
@@ -130,14 +143,14 @@ namespace TaskList.Business.Helpers
                     area.DisplayOrder = toSave.DisplayOrder;
                     area.IsActive = toSave.IsActive;
                     area.UpdatedDate = DateTime.Now;
-                    area.UpdatedBy = tempEmail;
+                    area.UpdatedBy = currentUserEmail;
 
                     // SubAreas
-                    if(toSave.SubAreas != null && toSave.SubAreas.Any())
+                    if (toSave.SubAreas != null && toSave.SubAreas.Any())
                     {
                         toSave.SubAreas
                             .ToList()
-                            .ForEach(x => SubAreas.Save(x));
+                            .ForEach(x => SubAreas.Save(x, currentUserEmail));
                     }
 
                     db.SaveChanges();

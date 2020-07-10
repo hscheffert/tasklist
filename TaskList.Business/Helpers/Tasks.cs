@@ -87,8 +87,16 @@ namespace TaskList.Business.Helpers
         {
             using (var db = new DB())
             {
-                var dtos = db.Task
-                    .Include(x => x.Staff).ThenInclude(x => x.User)
+                IQueryable<Task> query = db.Task
+                    .Include(x => x.Staff)
+                        .ThenInclude(x => x.User);
+
+                if (activeOnly)
+                {
+                    query = query.Where(x => x.IsActive);
+                }
+
+                var dtos = query
                     .Select(x => new TaskDTO()
                     {
                         RowKey = x.TaskId,
@@ -106,15 +114,6 @@ namespace TaskList.Business.Helpers
                         PrimaryStaffName = x.Staff
                             .Where(s => s.StaffType.Name == StaffTypeNames.Primary).Select(x => x.User.LastName + ", " + x.User.FirstName)
                             .FirstOrDefault(),
-                        AssignedStaffMembers = x.Staff.Select(s => new StaffMemberDTO()
-                        {
-                            StaffTypeId = s.StaffTypeId,
-                            StaffTypeName = s.StaffType.Name,
-                            FirstName = s.User.FirstName,
-                            LastName = s.User.LastName,
-                            UserId = s.UserId,
-                            IsSupervisor = s.User.IsSupervisor,
-                        }),
                         DisplayOrder = x.DisplayOrder,
                         IsActive = x.IsActive,
                         CreatedBy = x.CreatedBy,
@@ -123,22 +122,14 @@ namespace TaskList.Business.Helpers
                         UpdatedDate = x.UpdatedDate
                     });
 
-                if (activeOnly)
-                {
-                    dtos = dtos.Where(x => x.IsActive);
-                }
-
                 return dtos
                     .OrderBy(x => x.DisplayOrder)
                     .ToList();
             }
         }
 
-        public static Guid? Save(TaskDetailsDTO toSave)
+        public static Guid? Save(TaskDetailsDTO toSave, string currentUserEmail)
         {
-            // TODO: Should be current user
-            var tempEmail = "hscheffert@qci.com";
-
             using (var db = new DB())
             {
                 try
@@ -162,7 +153,7 @@ namespace TaskList.Business.Helpers
                         }
 
                         entity.CreatedDate = DateTime.Now;
-                        entity.CreatedBy = tempEmail;
+                        entity.CreatedBy = currentUserEmail;
                         db.Task.Add(entity);
                     }
 
@@ -176,11 +167,9 @@ namespace TaskList.Business.Helpers
                     entity.DisplayOrder = toSave.DisplayOrder;
                     entity.IsActive = toSave.IsActive;
                     entity.UpdatedDate = DateTime.Now;
-                    entity.UpdatedBy = tempEmail;
+                    entity.UpdatedBy = currentUserEmail;
 
                     db.SaveChanges();
-
-                    Tasks.CreateUpdateTaskStaff(toSave, entity.TaskId);
 
                     return entity.TaskId;
                 }
@@ -212,34 +201,45 @@ namespace TaskList.Business.Helpers
             }
         }
 
-        private static void CreateUpdateTaskStaff(TaskDetailsDTO taskDetails, Guid taskId)
+        public static List<TaskDTO> GetAllTasks()
         {
-            var grouped = taskDetails.TaskStaff
-                .GroupBy(x => x.UserId == null)
-                .ToDictionary(g => g.Key, g => g.ToList());
-            var unassignedStaff = grouped[true];
-            var assignedStaff = grouped[false];
-
-            // Delete any Staff that are now unassigned
-            List<TaskStaffDTO> staffToDelete = unassignedStaff
-                .Where(x => x.StaffId != null)
-                .ToList();
-            staffToDelete.ForEach(x => Staffs.Delete((Guid)x.StaffId));
-
-            // Create/Update other staff
-            var staffDtos = assignedStaff
-                .Select(x => new StaffDTO()
-                {
-                    StaffId = (Guid)(x.StaffId != null ? x.StaffId : Guid.Empty),
-                    StaffTypeId = (Guid)x.StaffTypeId,
-                    UserId = (Guid)x.UserId,
-                    TaskId = taskId,
-                    IsActive = taskDetails.IsActive
-                });
-
-            foreach (StaffDTO dto in staffDtos)
+            using (var db = new DB())
             {
-                Staffs.Save(dto);
+                // Get all tasks, matching on staff, but including tasks without staff (left joins)
+                IQueryable<TaskDTO> dtos = from task in db.Task
+                                           join stf in db.Staff on task.TaskId equals stf.TaskId into _staff
+                                           from staff in _staff.DefaultIfEmpty()
+                                           join usr in db.User on staff.UserId equals usr.UserId into _user
+                                           from user in _user.DefaultIfEmpty()
+                                           join stfType in db.StaffType on staff.StaffTypeId equals stfType.StaffTypeId into _staffType
+                                           from staffType in _staffType.DefaultIfEmpty()
+                                           where staffType == null ? true : staffType.Name == StaffTypeNames.Primary
+                                           select new TaskDTO()
+                                           {
+                                               RowKey = staff.StaffId,
+                                               TaskId = task.TaskId,
+                                               Name = task.Name,
+                                               AreaId = task.Area.AreaId,
+                                               AreaName = task.Area.Name,
+                                               SubAreaId = task.SubArea.SubAreaId,
+                                               SubAreaName = task.SubArea.Name,
+                                               FrequencyId = task.Frequency.FrequencyId,
+                                               FrequencyName = task.Frequency.Name,
+                                               Notes = task.Notes,
+                                               IsInPolicyTech = task.IsInPolicyTech,
+                                               ProcedureFileName = task.ProcedureFileName,
+                                               PrimaryStaffName = user != null ? user.LastName + ", " + user.FirstName : null,
+                                               DisplayOrder = task.DisplayOrder,
+                                               IsActive = task.IsActive,
+                                               CreatedBy = task.CreatedBy,
+                                               CreatedDate = task.CreatedDate,
+                                               UpdatedBy = task.UpdatedBy,
+                                               UpdatedDate = task.UpdatedDate
+                                           };
+
+                return dtos
+                    .OrderBy(x => x.DisplayOrder)
+                    .ToList();
             }
         }
 
@@ -269,15 +269,6 @@ namespace TaskList.Business.Helpers
                         PrimaryStaffName = x.Task.Staff
                             .Where(s => s.StaffType.Name == StaffTypeNames.Primary).Select(x => x.User.LastName + ", " + x.User.FirstName)
                             .FirstOrDefault(),
-                        AssignedStaffMembers = x.Task.Staff.Select(s => new StaffMemberDTO()
-                        {
-                            StaffTypeId = s.StaffTypeId,
-                            StaffTypeName = s.StaffType.Name,
-                            FirstName = s.User.FirstName,
-                            LastName = s.User.LastName,
-                            UserId = s.UserId,
-                            IsSupervisor = s.User.IsSupervisor,
-                        }),
                         DisplayOrder = x.Task.DisplayOrder,
                         IsActive = x.Task.IsActive,
                         CreatedBy = x.Task.CreatedBy,
