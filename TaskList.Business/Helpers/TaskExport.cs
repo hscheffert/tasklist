@@ -1,11 +1,7 @@
 ﻿using ClosedXML.Excel;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TaskList.Core.DTOs;
-using Microsoft.EntityFrameworkCore.Internal;
-using TaskList.Data.Model;
 using System.IO;
 
 namespace TaskList.Business.Helpers
@@ -14,56 +10,41 @@ namespace TaskList.Business.Helpers
     {
         public static byte[] GetTaskExportFile()
         {
-            var tasks = Tasks.GetTasksForExport();
-            var staffTypes = StaffTypes.GetAll(true);
-            var staffTypeNames = staffTypes.Select(x => x.Name).ToList();
+            var tasks = Tasks.GetAllTasks();
+            var staffTypes = StaffTypes.GetStaffTypesForExport();
 
-            var columnNames = new List<string>()
+            // Loop through tasks to determine how many of each staff type there are
+            foreach (TaskDTO task in tasks)
             {
-                "Name", "Area", "Sub Area", "Frequency", "Notes", "Policy Tech", "Procedure File Name"
-            };
-            staffTypeNames.ForEach(x => columnNames.Add(x));
+                var staffTypeLookup = Staffs.GetSecondaryTaskStaffLookup(task.TaskId);
+
+                foreach (StaffTypeDTO staffType in staffTypes)
+                {
+                    var taskStaffTypeUserNames = staffTypeLookup[staffType.Name];
+                    var taskStaffTypeUserCount = taskStaffTypeUserNames.Count();
+
+                    if (taskStaffTypeUserCount > staffType.Max)
+                    {
+                        staffType.Max = taskStaffTypeUserCount;
+                    }
+                }
+            }
 
             using (var workbook = new XLWorkbook())
             {
                 IXLWorksheet worksheet = workbook.Worksheets.Add("Tasks");
                 worksheet.ColumnWidth = 20;
+                worksheet.Column(1).Width = 5;
+                worksheet.Column(7).Width = 10;
+                worksheet.Column(2).Width = 40;
                 worksheet.Style.Alignment.WrapText = true;
 
-                // Header
-                for (var i = 0; i < columnNames.Count; i++)
-                {
-                    var column = i + 1;
-                    worksheet.Cell(1, column).Value = columnNames[i];
-                    worksheet.Cell(1, column).Style.Font.Bold = true;
-                    worksheet.Cell(1, column).Style.Border.BottomBorder = XLBorderStyleValues.Thick;
-                }
+                AddHeaderRow(worksheet, staffTypes);
 
                 var row = 2;
-                foreach (TaskExportDTO task in tasks)
+                foreach (TaskDTO task in tasks)
                 {
-                    var policyTechYesNo = task.IsInPolicyTech ? "Yes" : "No";
-
-                    worksheet.Cell(row, 1).Value = task.Name;
-                    worksheet.Cell(row, 2).Value = task.AreaName;
-                    worksheet.Cell(row, 3).Value = task.SubAreaName;
-                    worksheet.Cell(row, 4).Value = task.FrequencyName;
-                    worksheet.Cell(row, 5).Value = task.Notes;
-                    worksheet.Cell(row, 6).Value = policyTechYesNo;
-                    worksheet.Cell(row, 7).Value = task.ProcedureFileName;
-
-                    var staffGroups = task.Staff.ToLookup(s => s.StaffTypeName,
-                         s => s.Name);
-
-                    var column = 8;
-
-                    foreach (StaffTypeDTO type in staffTypes)
-                    {
-                        var names = staffGroups[type.Name];
-                        worksheet.Cell(row, column).Value = names.ToList().Join("\n"); ;
-                        column += 1;
-                    }
-
+                    AddTaskRow(worksheet, task, row, staffTypes);
                     row += 1;
                 }
 
@@ -73,6 +54,83 @@ namespace TaskList.Business.Helpers
                     var content = stream.ToArray();
                     return content;
                 }
+            }
+        }
+
+        private static void AddHeaderRow(IXLWorksheet worksheet, IEnumerable<StaffTypeDTO> staffTypes)
+        {
+            var columnNames = new List<string>()
+            {
+                "Display Order", "Name", "Area", "Sub Area", "Frequency", "Notes", "Policy Tech", "Procedure File Name", "Primary Staff"
+            };
+
+            foreach (var staffType in staffTypes)
+            {
+                if(staffType.Max == 1)
+                {
+                    columnNames.Add(staffType.Name);
+                }
+                else
+                {
+                    for (var i = 0; i < staffType.Max; i++)
+                    {
+                        columnNames.Add($"{staffType.Name} {i + 1}");
+                    }
+                }
+            }
+
+            var column = 1;
+            foreach(var columnName in columnNames)
+            {
+                worksheet.Cell(1, column).Value = columnName;
+                column++;
+            }
+
+            // Header is bold and has thick bottom border.
+            worksheet.Row(1).Style.Font.Bold = true;
+            worksheet.Row(1).Style.Border.BottomBorder = XLBorderStyleValues.Thick;
+            worksheet.Row(1).Style.Alignment.WrapText = false;
+        }
+
+        private static void AddTaskRow(IXLWorksheet worksheet, TaskDTO task, int row, IEnumerable<StaffTypeDTO> staffTypes)
+        {
+            worksheet.Cell(row, 1).Value = task.DisplayOrder;
+            worksheet.Cell(row, 2).Value = task.Name;
+            worksheet.Cell(row, 3).Value = task.AreaName;
+            worksheet.Cell(row, 4).Value = task.SubAreaName;
+            worksheet.Cell(row, 5).Value = task.FrequencyName;
+            worksheet.Cell(row, 6).Value = task.Notes;
+            worksheet.Cell(row, 7).Value = task.IsInPolicyTech ? "Yes" : "No";
+            worksheet.Cell(row, 8).Value = task.ProcedureFileName;
+            worksheet.Cell(row, 9).Value = task.PrimaryStaffName;
+
+            var staffTypeLookup = Staffs.GetSecondaryTaskStaffLookup(task.TaskId);
+            var column = 10;
+
+            // Secondary Staff
+            foreach (StaffTypeDTO staffType in staffTypes)
+            {
+                var taskStaffTypeUserNames = staffTypeLookup[staffType.Name];
+                var taskStaffTypeUserCount = taskStaffTypeUserNames.Count();
+
+                if (taskStaffTypeUserCount > staffType.Max)
+                {
+                    staffType.Max = taskStaffTypeUserCount;
+                }
+
+                if(taskStaffTypeUserCount == 0)
+                {
+                    worksheet.Cell(row, column).Value = "";
+                    column += staffType.Max;
+                } 
+                else
+                {
+                    foreach (var name in taskStaffTypeUserNames)
+                    {
+                        worksheet.Cell(row, column).Value = name;
+                        column += 1;
+                    }
+                }                
             }
         }
     }

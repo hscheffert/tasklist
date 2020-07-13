@@ -3,7 +3,6 @@ import { Space, notification, Select } from 'antd';
 import TaskDetailsDTO from '../../models/generated/TaskDetailsDTO';
 import HistoryUtil from '../../utils/HistoryUtil';
 import DataTable, { DataTableColumnProps } from '../shared/DataTable';
-import DataTableUtil from '../../utils/DataTableUtil';
 import Routes from 'config/ConfigureRoutes';
 import StaffDTO from 'models/generated/StaffDTO';
 import StaffApiController from 'api/StaffApiController';

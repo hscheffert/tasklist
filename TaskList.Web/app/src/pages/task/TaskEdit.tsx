@@ -14,22 +14,17 @@ import {
 import HistoryUtil from '../../utils/HistoryUtil';
 import { FormInstance } from 'antd/lib/form';
 import * as FormHelper from '../../utils/FormUtil';
-import StaffTypeNames from '../../constants/StaffTypeNames';
 import TaskApiController from 'api/TaskApiController';
-import StaffTypeApiController from 'api/StaffTypeApiController';
 import AreaApiController from 'api/AreaApiController';
 import FrequencyApiController from 'api/FrequencyApiController';
-import UserApiController from 'api/UserApiController';
 import TaskDetailsDTO from 'models/generated/TaskDetailsDTO';
 import AreaDTO from 'models/generated/AreaDTO';
 import SubAreaDTO from 'models/generated/SubAreaDTO';
 import FrequencyDTO from 'models/generated/FrequencyDTO';
-import UserDTO from 'models/generated/UserDTO';
-import StaffTypeDTO from 'models/generated/StaffTypeDTO';
 import Routes from 'config/ConfigureRoutes';
 import { UserState } from 'redux/UserReducer';
 import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
-import TaskStaffTable from '../staff/StaffTable';
+import StaffTable from '../staff/StaffTable';
 import ReduxStoreModel from 'redux/ReduxModel';
 import { connect } from 'react-redux';
 
@@ -77,7 +72,7 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
             <div style={{ paddingBottom: '60px' }}>
                 <Divider />
                 <Typography.Title level={4}>Staff</Typography.Title>
-                <TaskStaffTable
+                <StaffTable
                     isAdmin={this.props.User.isAdmin}
                     taskId={this.state.id}
                     task={this.state.task}
@@ -92,15 +87,7 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
             ...FormHelper.FormConstants.FormLayout,
             labelCol: { span: 4 },
             wrapperCol: { span: 6 },
-        }
-
-        // const allButBackup1 = this.formRef?.getFieldsValue([
-        //     'primaryStaffUserId', 'backup2UserId', 'backup3UserId', 'alternativeSupervisorUserId'
-        // ]) || {};
-        // const allButBackup1UserIds = Object.values(allButBackup1);
-        // console.log(allButBackup1UserIds);
-        // const backup1 = this.state.users.filter((user: any) => allButBackup1UserIds.indexOf(user.userId) === -1);
-        // console.log(backup1);
+        };
 
         return (
             <Form
@@ -227,9 +214,6 @@ class TaskEdit extends React.Component<TaskEditProps, TaskEditState> {
 
                 // Set subareas since we know the area
                 subareas = areasResponse.data.find((x: any) => x.areaId == taskResponse.data.areaId).subAreas;
-
-                // Set the staff dropdowns based on task staff
-                // this.setStaffInForm(taskResponse.data.taskStaff);
                 task = taskResponse.data;
             }
 

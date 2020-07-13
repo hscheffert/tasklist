@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskList.Core.Constants;
 using TaskList.Core.DTOs;
 using TaskList.Core.Exceptions;
 using TaskList.Data.Model;
@@ -230,6 +231,28 @@ namespace TaskList.Business.Helpers
 
                 return dtos
                     .ToList();
+            }
+        }
+
+        public static ILookup<string, string> GetSecondaryTaskStaffLookup(Guid taskId)
+        {
+            using (var db = new DB())
+            {
+                return db.Staff
+                    .Where(x => x.TaskId == taskId)
+                    .Where(x => x.StaffType.Name != StaffTypeNames.Primary)
+                    .Select(x => new TaskStaffDTO()
+                    {
+                        StaffId = x.StaffId,
+                        StaffTypeId = x.StaffTypeId,
+                        TaskId = x.TaskId,
+                        UserId = x.UserId,
+                        StaffTypeName = x.StaffType.Name,
+                        Name = $"{x.User.LastName}, {x.User.FirstName}",
+                        IsActive = x.IsActive,
+                    })
+                    .ToList()
+                    .ToLookup(x => x.StaffTypeName, x => x.Name);
             }
         }
     }

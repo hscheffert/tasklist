@@ -7,6 +7,7 @@ import InterfaceConstructor from '../InterfaceConstructor';
 interface StaffGroupDTO { 
     staffTypeName: string | null;
     staffNames: string[][];
+    count: number;
 }
 const StaffGroupDTO: InterfaceConstructor<StaffGroupDTO> = {
     create: (initValues?: {} | null | undefined) => {
@@ -14,6 +15,7 @@ const StaffGroupDTO: InterfaceConstructor<StaffGroupDTO> = {
         {
             staffTypeName: null,
             staffNames: [],
+            count: 0,
         },
         initValues);
     }

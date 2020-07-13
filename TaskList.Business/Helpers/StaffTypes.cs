@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskList.Core.Constants;
 using TaskList.Core.DTOs;
 using TaskList.Data.Model;
 
@@ -146,5 +147,30 @@ namespace TaskList.Business.Helpers
                 return id;
             }
         }
+
+        public static List<StaffTypeDTO> GetStaffTypesForExport()
+        {
+            using (var db = new DB())
+            {
+                IQueryable<StaffType> query = db.StaffType
+                    .Where(x => x.Name != StaffTypeNames.Primary)
+                    .Where(x => x.IsActive);
+                
+                var dtos = query
+                    .Select(x => new StaffTypeDTO()
+                    {
+                        StaffTypeId = x.StaffTypeId,
+                        Name = x.Name,
+                        DisplayOrder = x.DisplayOrder,
+                        AllowMultiple = x.AllowMultiple,
+                        Max = 1
+                    });
+
+                return dtos
+                    .OrderBy(x => x.DisplayOrder)
+                    .ToList();
+            }
+        }
+
     }
 }

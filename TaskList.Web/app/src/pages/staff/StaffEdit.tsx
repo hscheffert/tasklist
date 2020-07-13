@@ -12,7 +12,6 @@ import { FormInstance } from 'antd/lib/form';
 import * as FormHelper from '../../utils/FormUtil';
 import Routes from 'config/ConfigureRoutes';
 import { BreadcrumbsItem } from 'pages/shared/GlobalBreadcrumb';
-import TaskStaffDTO from 'models/generated/TaskStaffDTO';
 import StaffApiController from 'api/StaffApiController';
 import StaffDTO from 'models/generated/StaffDTO';
 import UserDTO from 'models/generated/UserDTO';
@@ -32,7 +31,9 @@ interface StaffEditState {
     loading: boolean;
     staff: StaffDTO;
     users: UserDTO[];
+    supervisors: UserDTO[];
     staffTypes: StaffTypeDTO[];
+    userOptions: UserDTO[];
 }
 
 class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffEditState> {
@@ -49,7 +50,9 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
             taskId: taskId,
             staff: StaffDTO.create(),
             users: [],
-            staffTypes: []
+            supervisors: [],
+            staffTypes: [],
+            userOptions: []
         };
     }
 
@@ -62,10 +65,13 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
             <Form.Item
                 label="User"
                 name="userId"
-                rules={[FormHelper.FormConstants.FormRequiredRule]}>
+                dependencies={['staffTypeId']}
+                rules={[FormHelper.FormConstants.FormRequiredRule, {
+                    validator: this.validateUser
+                }]}>
                 <Select
                     style={{ width: '200px' }}>
-                    {this.state.users.map(renderUserSelectOption)}
+                    {this.state.userOptions.map(renderUserSelectOption)}
                 </Select>
             </Form.Item>
         );
@@ -76,9 +82,17 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
             <Form.Item
                 label="Type"
                 name="staffTypeId"
+                dependencies={['userId']}
                 rules={[FormHelper.FormConstants.FormRequiredRule]}>
                 <Select
-                    style={{ width: '200px' }}>
+                    style={{ width: '200px' }}
+                    onChange={() => {
+                        const staffType = this.state.staffTypes.find(s => s.staffTypeId === this.formRef?.getFieldValue('staffTypeId'));
+
+                        this.setState({
+                            userOptions: staffType?.isSupervisor ? this.state.supervisors : this.state.users
+                        });
+                    }}>
                     {this.state.staffTypes.map((staffType: StaffTypeDTO) => (
                         <Select.Option
                             key={staffType.staffTypeId}
@@ -101,8 +115,8 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
                 onFinish={this.onFinish}
                 validateMessages={FormHelper.FormConstants.FormValidateMessages}
                 initialValues={initialValues}>
-                {this.renderUserFormItem()}
                 {this.renderStaffTypesFormItem()}
+                {this.renderUserFormItem()}
                 {FormHelper.renderIsActiveFormItem()}
                 {FormHelper.renderFormSaveButton()}
             </Form>
@@ -139,10 +153,11 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
         }
 
         promises.push(UserApiController.getAllActive());
+        promises.push(UserApiController.getActiveSupervisors());
         promises.push(StaffTypeApiController.getAllActive());
 
         try {
-            const [staffResponse, usersResponse, staffTypesResponse] = await Promise.all(promises);
+            const [staffResponse, usersResponse, supervisorsResponse, staffTypesResponse] = await Promise.all(promises);
             let staffState = {};
 
             if (staffResponse) {
@@ -157,6 +172,7 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
             this.setState({
                 loading: false,
                 users: usersResponse.data,
+                supervisors: supervisorsResponse.data,
                 staffTypes: staffTypesResponse.data,
                 ...staffState
             });
@@ -215,6 +231,17 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
                 description: err.description
             });
         }
+    }
+
+    private validateUser = (rule: any, userId: any) => {
+        const user = this.state.users.find(u => u.userId === userId);
+        const staffType = this.state.staffTypes.find(s => s.staffTypeId === this.formRef.getFieldValue('staffTypeId'));
+
+        if (userId && staffType && staffType.isSupervisor && !user.isSupervisor) {
+            return Promise.reject('User must be a supervisor');
+        }
+
+        return Promise.resolve();
     }
 }
 

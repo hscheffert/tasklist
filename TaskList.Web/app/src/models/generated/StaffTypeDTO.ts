@@ -15,6 +15,7 @@ interface StaffTypeDTO {
     createdDate: moment.Moment | string;
     updatedBy: string | null;
     updatedDate: moment.Moment | string | null;
+    max: number;
 }
 const StaffTypeDTO: InterfaceConstructor<StaffTypeDTO> = {
     create: (initValues?: {} | null | undefined) => {
@@ -30,6 +31,7 @@ const StaffTypeDTO: InterfaceConstructor<StaffTypeDTO> = {
             createdDate: new Date(0).toISOString(),
             updatedBy: null,
             updatedDate: null,
+            max: 0,
         },
         initValues);
     }

@@ -67,14 +67,14 @@ class TaskDetailsModal extends React.Component<TaskDetailsModalProps, TaskDetail
                 return [{
                     key: staffType.staffTypeId,
                     staffTypeName: staffType.name,
-                    name: 'None'
+                    name: ''
                 }];
             }
 
-            return [...taskStaffOfThisStaffType.map((ts: TaskStaffDTO) => {
+            return [...taskStaffOfThisStaffType.map((ts: TaskStaffDTO, index: number) => {
                 return {
                     key: ts.staffId,
-                    staffTypeName: staffType.name,
+                    staffTypeName: `${staffType.name}${taskStaffOfThisStaffType.length > 1 ? ` ${index + 1}` : ''}`,
                     name: ts.name
                 };
             })];

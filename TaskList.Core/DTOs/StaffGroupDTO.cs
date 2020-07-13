@@ -10,5 +10,6 @@ namespace TaskList.Core.DTOs
     {
         public string StaffTypeName { get; set; }
         public IEnumerable<string?> StaffNames { get; set; }
+        public int Count { get; set; }
     }
 }

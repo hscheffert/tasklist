@@ -18,7 +18,10 @@ namespace TaskList.Core.DTOs
         public string ProcedureFileName { get; set; }
         public int DisplayOrder { get; set; }
         public bool IsActive { get; set; }
-        public IEnumerable<TaskStaffDTO> Staff { get; set; }
-        // public IEnumerable<StaffGroupDTO> StaffGroups { get; set; }
+        public string PrimaryStaffName { get; set; }
+        public IEnumerable<TaskStaffDTO> SecondaryStaff { get; set; }
+        //public IEnumerable<TaskStaffDTO> Staff { get; set; }
+        ///public IEnumerable<StaffGroupDTO> SecondaryStaff { get; set; }
+        //public ILookup<string, TaskStaffDTO> SecondaryStaff { get; set; }
     }
 }

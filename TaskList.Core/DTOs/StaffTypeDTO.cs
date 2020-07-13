@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TaskList.Core.DTOs
 {
@@ -24,7 +25,6 @@ namespace TaskList.Core.DTOs
         public DateTime CreatedDate { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-
-        // public IEnumerable<StaffDTO> Staff { get; set; }
+        public int Max {get; set;}
     }
 }

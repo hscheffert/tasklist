@@ -11,5 +11,6 @@ namespace TaskList.Core.DTOs
         public string StaffTypeName { get; set; }
         public string Name { get; set; }
         public bool IsActive { get; set; }
+       
     }
 }

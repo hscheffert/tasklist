@@ -16,7 +16,8 @@ interface TaskExportDTO {
     procedureFileName: string | null;
     displayOrder: number;
     isActive: boolean;
-    staff: TaskStaffDTO[] | null;
+    primaryStaffName: string | null;
+    secondaryStaff: TaskStaffDTO[] | null;
 }
 const TaskExportDTO: InterfaceConstructor<TaskExportDTO> = {
     create: (initValues?: {} | null | undefined) => {
@@ -32,7 +33,8 @@ const TaskExportDTO: InterfaceConstructor<TaskExportDTO> = {
             procedureFileName: null,
             displayOrder: 0,
             isActive: false,
-            staff: [],
+            primaryStaffName: null,
+            secondaryStaff: [],
         },
         initValues);
     }
