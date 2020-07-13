@@ -46,7 +46,7 @@ class StaffTable extends React.Component<StaffTableProps, StaffTableState> {
           if (this.props.isAdmin) {
             return (
               <Space size={20}>
-                <EditOutlined onClick={() => this.editStaff(record.taskId)} />
+                <EditOutlined onClick={() => this.editStaff(record.staffId)} />
                 {deleteIcon}
               </Space>
             );

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TaskList.Core.DTOs;
 using System.IO;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace TaskList.Business.Helpers
 {
@@ -113,24 +114,23 @@ namespace TaskList.Business.Helpers
                 var taskStaffTypeUserNames = staffTypeLookup[staffType.Name];
                 var taskStaffTypeUserCount = taskStaffTypeUserNames.Count();
 
-                if (taskStaffTypeUserCount > staffType.Max)
-                {
-                    staffType.Max = taskStaffTypeUserCount;
-                }
-
                 if(taskStaffTypeUserCount == 0)
                 {
-                    worksheet.Cell(row, column).Value = "";
-                    column += staffType.Max;
+                    worksheet.Cell(row, column).Value = "";                    
                 } 
                 else
                 {
+                    var tempColumnStart = column;
+
                     foreach (var name in taskStaffTypeUserNames)
                     {
-                        worksheet.Cell(row, column).Value = name;
-                        column += 1;
+                        worksheet.Cell(row, tempColumnStart).Value = name;
+                        tempColumnStart += 1;
                     }
-                }                
+                }
+
+                // Move to the next set of staff type columns
+                column += staffType.Max;
             }
         }
     }

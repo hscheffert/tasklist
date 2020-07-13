@@ -146,6 +146,8 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
 
         this.setState({ loading: true });
 
+        console.log(this.state.id);
+
         if (this.state.id !== '0') {
             promises.push(StaffApiController.get(this.state.id));
         } else {
@@ -166,7 +168,7 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
                 this.formRef?.setFieldsValue({
                     ...staffResponse.data,
                 });
-                staffState = { staff: staffResponse.data } 
+                staffState = { staff: staffResponse.data }
             }
 
             this.setState({
@@ -174,6 +176,7 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
                 users: usersResponse.data,
                 supervisors: supervisorsResponse.data,
                 staffTypes: staffTypesResponse.data,
+                userOptions: staffResponse?.data?.isSupervisor ? supervisorsResponse.data : usersResponse.data,
                 ...staffState
             });
 
@@ -200,7 +203,7 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
 
     private getInitialValues = () => {
         if (this.state.id === '0') {
-            return {
+            return {               
                 isActive: true
             };
         }
@@ -208,7 +211,9 @@ class StaffEdit extends React.Component<RouteComponentProps<RouteParams>, StaffE
         const { staff } = this.state;
 
         return {
-            isActive: staff.isActive
+            isActive: staff.isActive,
+            userId: this.state.staff.userId,
+            staffTypeId: this.state.staff.staffTypeId
         };
     }
 

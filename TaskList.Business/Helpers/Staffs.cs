@@ -31,7 +31,8 @@ namespace TaskList.Business.Helpers
                         CreatedBy = x.CreatedBy,
                         CreatedDate = x.CreatedDate,
                         UpdatedBy = x.UpdatedBy,
-                        UpdatedDate = x.UpdatedDate
+                        UpdatedDate = x.UpdatedDate,
+                        IsSupervisor = x.StaffType.IsSupervisor
                     })
                     .FirstOrDefault();
 
@@ -65,7 +66,8 @@ namespace TaskList.Business.Helpers
                         CreatedBy = x.CreatedBy,
                         CreatedDate = x.CreatedDate,
                         UpdatedBy = x.UpdatedBy,
-                        UpdatedDate = x.UpdatedDate
+                        UpdatedDate = x.UpdatedDate,
+                        IsSupervisor = x.StaffType.IsSupervisor
                     });
 
                 return dtos

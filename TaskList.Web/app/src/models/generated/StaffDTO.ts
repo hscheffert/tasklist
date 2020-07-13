@@ -18,6 +18,7 @@ interface StaffDTO {
     firstName: string | null;
     lastName: string | null;
     staffTypeName: string | null;
+    isSupervisor: boolean;
 }
 const StaffDTO: InterfaceConstructor<StaffDTO> = {
     create: (initValues?: {} | null | undefined) => {
@@ -36,6 +37,7 @@ const StaffDTO: InterfaceConstructor<StaffDTO> = {
             firstName: null,
             lastName: null,
             staffTypeName: null,
+            isSupervisor: false,
         },
         initValues);
     }
