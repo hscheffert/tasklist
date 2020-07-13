@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "s2swUPJ2B3OSrhLCL6vS9lYACFCVGEPbh3rq0VeKgD7v6XcYZ2CREpio+Q+s/0Wkl/3sudIwdWaMtLt6WsniYQ==",
+  "dgSpecHash": "yNEijDHicYRHcBRfGwCoDRGVNZPDPHDWJddnKyJivek0J3BBeuryaCPVc0/dNZxR3lBegFLlwLAjhsz6ElucKA==",
   "success": true,
   "projectFilePath": "F:\\Projects\\TOS\\TaskList\\TaskList.Web\\TaskList.Web.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,9 @@
     "C:\\Users\\hscheffert\\.nuget\\packages\\azure.identity\\1.1.1\\azure.identity.1.1.1.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\azure.security.keyvault.certificates\\4.0.2\\azure.security.keyvault.certificates.4.0.2.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\azure.security.keyvault.secrets\\4.0.3\\azure.security.keyvault.secrets.4.0.3.nupkg.sha512",
+    "C:\\Users\\hscheffert\\.nuget\\packages\\closedxml\\0.95.3\\closedxml.0.95.3.nupkg.sha512",
+    "C:\\Users\\hscheffert\\.nuget\\packages\\documentformat.openxml\\2.7.2\\documentformat.openxml.2.7.2.nupkg.sha512",
+    "C:\\Users\\hscheffert\\.nuget\\packages\\excelnumberformat\\1.0.10\\excelnumberformat.1.0.10.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\identitymodel\\4.0.0\\identitymodel.4.0.0.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\identityserver4\\3.0.0\\identityserver4.3.0.0.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\identityserver4.aspnetidentity\\3.0.0\\identityserver4.aspnetidentity.3.0.0.nupkg.sha512",
@@ -171,6 +174,7 @@
     "C:\\Users\\hscheffert\\.nuget\\packages\\system.io.compression.zipfile\\4.3.0\\system.io.compression.zipfile.4.3.0.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\system.io.filesystem\\4.3.0\\system.io.filesystem.4.3.0.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\system.io.filesystem.primitives\\4.3.0\\system.io.filesystem.primitives.4.3.0.nupkg.sha512",
+    "C:\\Users\\hscheffert\\.nuget\\packages\\system.io.packaging\\4.0.0\\system.io.packaging.4.0.0.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\system.linq\\4.3.0\\system.linq.4.3.0.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\system.linq.expressions\\4.3.0\\system.linq.expressions.4.3.0.nupkg.sha512",
     "C:\\Users\\hscheffert\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",

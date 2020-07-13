@@ -5,6 +5,7 @@
     <UserSecretsId>e4963214-a961-4a9f-acc9-967b4e9fb87d</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.95.3" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
@@ -69,6 +70,9 @@
     <None Update="app\src\models\generated\StaffDTO.ts">
       <CustomToolNamespace>..\TaskList.Core\DTOs\StaffDTO.cs</CustomToolNamespace>
     </None>
+    <None Update="app\src\models\generated\StaffGroupDTO.ts">
+      <CustomToolNamespace>..\TaskList.Core\DTOs\StaffGroupDTO.cs</CustomToolNamespace>
+    </None>
     <None Update="app\src\models\generated\StaffMemberDTO.ts">
       <CustomToolNamespace>..\TaskList.Core\DTOs\StaffMemberDTO.cs</CustomToolNamespace>
     </None>
@@ -83,6 +87,9 @@
     </None>
     <None Update="app\src\models\generated\TaskDTO.ts">
       <CustomToolNamespace>..\TaskList.Core\DTOs\TaskDTO.cs</CustomToolNamespace>
+    </None>
+    <None Update="app\src\models\generated\TaskExportDTO.ts">
+      <CustomToolNamespace>..\TaskList.Core\DTOs\TaskExportDTO.cs</CustomToolNamespace>
     </None>
     <None Update="app\src\models\generated\TaskStaffDTO.ts">
       <CustomToolNamespace>..\TaskList.Core\DTOs\TaskStaffDTO.cs</CustomToolNamespace>

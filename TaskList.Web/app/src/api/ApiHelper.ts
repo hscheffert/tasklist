@@ -1,4 +1,4 @@
-﻿import axios, { AxiosResponse as potato } from 'axios';
+﻿import axios, { AxiosResponse as potato, ResponseType } from 'axios';
 
 export type HttpVerb = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -10,6 +10,7 @@ export class HttpApiRequestOptions {
      * Skips the normal login redirect when a 401 is encountered. Critical for login and login check requests
      */
      ignoreAuthenticationErrors?: boolean;
+     responseType?: ResponseType;
 
     /**
      * Both the FormData to be posted to the given URL and the indication that this call will post FormData
@@ -83,7 +84,7 @@ export class HttpApi {
         let request: Promise<AxiosResponse<TResult>>;
         switch (verb) {
             case "GET":
-                request = axios.get<TRequest, AxiosResponse<TResult>>(url);
+                request = axios.get<TRequest, AxiosResponse<TResult>>(url, { responseType: requestOptions.responseType });
                 break;
             case "POST":
                 request = axios.post<TRequest, AxiosResponse<TResult>>(url, req);

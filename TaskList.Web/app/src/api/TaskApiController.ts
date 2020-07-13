@@ -40,6 +40,12 @@ class TaskApiControllerInternal {
         let url = this.RouteToggle(id);
         return HttpApi.RestRequest<any, void>(null, 'put', url, requestOptions);
     }
+    // get: api/tasks/export
+    public RouteExport = () => `api/tasks/export`;
+    public export(requestOptions?: HttpApiRequestOptions): Promise<AxiosResponse<void>> {
+        let url = this.RouteExport();
+        return HttpApi.RestRequest<any, void>(null, 'get', url, requestOptions);
+    }
 }
 var TaskApiController = new TaskApiControllerInternal();
 export default TaskApiController;

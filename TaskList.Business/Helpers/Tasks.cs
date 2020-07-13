@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Linq.Expressions;
 using TaskList.Core.Constants;
 using TaskList.Core.DTOs;
 using TaskList.Data.Model;
@@ -279,6 +280,58 @@ namespace TaskList.Business.Helpers
 
                 return dtos
                     .OrderBy(t => t.DisplayOrder)
+                    .ToList();
+            }
+        }
+
+        public static List<TaskExportDTO> GetTasksForExport()
+        {
+            using (var db = new DB())
+            {
+                IQueryable<TaskExportDTO> dtos = from task in db.Task
+                                                 join stf in db.Staff on task.TaskId equals stf.TaskId into _staff
+                                                 from staff in _staff.DefaultIfEmpty()
+                                                 join usr in db.User on staff.UserId equals usr.UserId into _user
+                                                 from user in _user.DefaultIfEmpty()
+                                                 join stfType in db.StaffType on staff.StaffTypeId equals stfType.StaffTypeId into _staffType
+                                                 from staffType in _staffType.DefaultIfEmpty()
+                                                 where staffType == null ? true : staffType.Name == StaffTypeNames.Primary
+                                                 select new TaskExportDTO()
+                                                 {
+                                                     TaskId = task.TaskId,
+                                                     Name = task.Name,
+                                                     AreaName = task.Area.Name,
+                                                     SubAreaName = task.SubArea.Name,
+                                                     FrequencyName = task.Frequency.Name,
+                                                     Notes = task.Notes,
+                                                     IsInPolicyTech = task.IsInPolicyTech,
+                                                     ProcedureFileName = task.ProcedureFileName,
+                                                     DisplayOrder = task.DisplayOrder,
+                                                     IsActive = task.IsActive,
+                                                     Staff = task.Staff
+                                                        .OrderBy(s => s.StaffType.DisplayOrder)
+                                                        .Select(s => new TaskStaffDTO
+                                                        {
+                                                            StaffTypeName = s.StaffType.Name,
+                                                            Name = $"{s.User.LastName}, {s.User.FirstName}"
+                                                        })
+
+                                                     // TODO: This doesn't work?
+                                                     //StaffGroups = task.Staff
+                                                     //    .OrderBy(s => s.StaffType.DisplayOrder)
+                                                     //    .GroupBy(
+                                                     //        s => s.StaffType.Name,
+                                                     //        (staffTypeName, staffPeople) => new StaffGroupDTO
+                                                     //        {
+                                                     //            StaffTypeName = staffTypeName,
+                                                     //            StaffNames = staffPeople.Select(x => x.User.FirstName)
+                                                     //            // StaffNames = staffPeople.Select(x => $"{x.User.LastName}, {x.User.FirstName}")
+                                                     //        })
+                                                 };
+
+
+                return dtos
+                    .OrderBy(x => x.DisplayOrder)
                     .ToList();
             }
         }

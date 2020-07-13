@@ -202,7 +202,11 @@ F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCo
 F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Identity.UI.dll
 F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Embedded.dll
 F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Http.dll
+F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNet.Identity.Core.dll
+F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\ClosedXML.dll
+F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\DocumentFormat.OpenXml.dll
+F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\ExcelNumberFormat.dll
+F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\System.IO.Packaging.dll
 F:\Projects\TOS\TaskList\TaskList.Web\obj\Debug\netcoreapp3.1\TaskList.Web.csproj.CoreCompileInputs.cache
 F:\Projects\TOS\TaskList\TaskList.Web\obj\Debug\netcoreapp3.1\TaskList.Web.MvcApplicationPartsAssemblyInfo.cs
 F:\Projects\TOS\TaskList\TaskList.Web\obj\Debug\netcoreapp3.1\TaskList.Web.MvcApplicationPartsAssemblyInfo.cache
-F:\Projects\TOS\TaskList\TaskList.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNet.Identity.Core.dll

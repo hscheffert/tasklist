@@ -14,6 +14,7 @@ import Routes from 'config/ConfigureRoutes';
 import { UserState } from 'redux/UserReducer';
 import UserDTO from 'models/generated/UserDTO';
 import { renderUserSelectOption } from 'utils/FormUtil';
+import { saveAs } from 'file-saver';
 
 interface TaskTableProps {
   User: UserState;
@@ -88,6 +89,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
 
   renderTable = () => {
     const addButton = DataTable.TableButtons.Add("Add Task", Routes.TASK_EDIT('0').ToRoute());
+    const exportButton = DataTable.TableButtons.Generic("Export", this.handleExport);
 
     return (
       <DataTable
@@ -102,7 +104,7 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
         columns={this.customTableColumns}
         data={this.state.data}
         globalSearch={true}
-        buttonBar={this.props.User.isAdmin && [addButton]}
+        buttonBar={this.props.User.isAdmin && [exportButton, addButton]}
       />
     );
   }
@@ -253,6 +255,36 @@ class TaskTable extends React.Component<TaskTableProps, TaskTableState> {
       modalVisible: false,
       selectedTaskId: null
     });
+  }
+
+  private handleExport = async () => {
+    this.setState({ loading: true });
+
+    try {
+      const result = await TaskApiController.export({
+        responseType: 'blob'
+      }) as any;
+
+      let filename = result.headers['content-disposition']
+        .split(';')
+        .find((n: any) => n.includes('filename='))
+        .replace('filename=', '')
+        .trim();
+      let url = window.URL
+        .createObjectURL(new Blob([result.data])); 
+
+      saveAs(url, filename);
+
+      this.setState({ loading: false });
+    } catch (err) {
+      this.setState({ loading: false });
+      console.error(err);
+      notification.error({
+        message: err.message,
+        description: err.description
+      });
+    }
+    
   }
 }
 
